@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo -- My First Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="下载release版本啊！！！！！！ 不不不 release太老了，要看说明下载哪个分支的！！！ 12tar zxvf kvm-vmi-master.tar chmod 777 kvm-vmi-master -R 编译内核依赖库参考：CentOS 7 下编译安装 Linux 4.14 内核  进入kvm文件夹编译linux内核  123456tar zxvf kvm-for-linus.tar.g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo -- My First Blog">
+<meta property="og:url" content="http://yoursite.com/2018/12/29/kvm-vmi_readme/index.html">
+<meta property="og:site_name" content="Hexo -- My First Blog">
+<meta property="og:description" content="下载release版本啊！！！！！！ 不不不 release太老了，要看说明下载哪个分支的！！！ 12tar zxvf kvm-vmi-master.tar chmod 777 kvm-vmi-master -R 编译内核依赖库参考：CentOS 7 下编译安装 Linux 4.14 内核  进入kvm文件夹编译linux内核  123456tar zxvf kvm-for-linus.tar.g">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-28T18:10:56.211Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo -- My First Blog">
+<meta name="twitter:description" content="下载release版本啊！！！！！！ 不不不 release太老了，要看说明下载哪个分支的！！！ 12tar zxvf kvm-vmi-master.tar chmod 777 kvm-vmi-master -R 编译内核依赖库参考：CentOS 7 下编译安装 Linux 4.14 内核  进入kvm文件夹编译linux内核  123456tar zxvf kvm-for-linus.tar.g">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo -- My First Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo -- My First Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">come on!</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-kvm-vmi_readme" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/29/kvm-vmi_readme/" class="article-date">
+  <time datetime="2018-12-28T18:10:56.211Z" itemprop="datePublished">2018-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>下载release版本啊！！！！！！</strong></p>
+<p><strong>不不不 release太老了，要看说明下载哪个分支的！！！</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar zxvf kvm-vmi-master.tar </span><br><span class="line">chmod 777 kvm-vmi-master -R</span><br></pre></td></tr></table></figure>
+<p>编译内核依赖库参考：<br><a href="https://blog.csdn.net/mrzhouxiaofei/article/details/79140435" target="_blank" rel="noopener">CentOS 7 下编译安装 Linux 4.14 内核</a></p>
+<ol>
+<li><p>进入kvm文件夹编译linux内核</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tar zxvf kvm-for-linus.tar.gz </span><br><span class="line">make mrpropercp /boot/config-3.10.0-514.e17.x86_64    /root/linux-4.12/.config</span><br><span class="line"></span><br><span class="line">make</span><br><span class="line">make modules_install</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p> make台式机上用了50分钟，，，自己笔记本用了近4小时。。。</p>
+<p> <code>lsmod | grep kvm</code> 查看kvm 和kvm_intel 是否已经加载。</p>
+</li>
+<li><p>重启</p>
+<p> 有坑。。</p>
+<p> 登陆界面会出现闪烁，似乎一直在点击解锁按钮，导致无法输入登陆密码。</p>
+<p> ——— <code>ctrl + Alt +F2</code>进入命令行登陆，执行<code>sudo yum upgrade</code>升级命令，升级过程比较久需要耐心等待，升级过程中电脑最好不要让它进入休眠状态，特别是vm虚拟机。完毕之后<code>reboot</code>重启。</p>
+</li>
+<li><p>进入qemu文件夹，编译qemu</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y gcc* glib* zlib* gtk3-devel</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">error: [Errno 256] No more mirrors to try</span><br><span class="line"></span><br><span class="line">sudo yum clean all </span><br><span class="line">sudo rm -r /var/cache/yum</span><br><span class="line">sudo yum update</span><br><span class="line"></span><br><span class="line">[root@centos6test ~]# yum update</span><br><span class="line">Loaded plugins: fastestmirror, refresh-packagekit</span><br><span class="line">Determining fastest mirrors</span><br><span class="line">Could not retrieve mirrorlist http://mirrorlist.centos.org/?release=6&amp;arch=i386&amp;repo=os</span><br><span class="line">error was 14: PYCURL ERROR 6 - &quot;&quot; Error: Cannot find a valid baseurl for repo: base</span><br><span class="line"></span><br><span class="line">Changing to ONBOOT=yes in /etc/sysconfig/network-scripts/ifcfg-enp0s3</span><br></pre></td></tr></table></figure>
+
+- `yum install -y libgnomeui-devel`
+- `yum install -y libfdt-devel`
+- `./configure --enable-kvm --target-list=&quot;x86_64-softmmu&quot;`
+- `make`
+- `make install`
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/bin/qemu-system-x86_64 /usr/bin/qemu-kvm</span><br><span class="line">ln -s /usr/local/bin/qemu-system-x86_64 /usr/libexec/qemu-kvm</span><br><span class="line">ln -s /usr/local/bin/qemu-img /usr/bin/qemu-img</span><br></pre></td></tr></table></figure>
+
+（后面两个qemu-kvm和qemu-img都已经存在，就没管了。）
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">创建img;分配空间</span><br><span class="line">qemu-img create -f qcow2 winxp.img 10G</span><br><span class="line">创建虚拟机(img和iso文件的路径)</span><br><span class="line">qemu-system-x86_64 -m 2048 -enable-kvm winxp.img -cdrom winxp.iso</span><br><span class="line">启动虚拟机</span><br><span class="line">qemu-system-x86_64 -m 2048 -enable-kvm winxp.img</span><br></pre></td></tr></table></figure>
+
+to be continued... test 
+</code></pre><ol start="4">
+<li><p>进入libvmi文件夹，编译前提是kvm的libvirt支持。所以先下载libvirt源码编译。</p>
+<ul>
+<li><code>./configure</code> 依赖库：<ul>
+<li><code>yum install gnutls-devel</code> (配置pkg-config-path)</li>
+<li><code>yum install yajl.x86_64 yajl-devel.x86_64</code></li>
+<li><code>yum install libnl-devel.x86_64</code></li>
+<li><code>yum install device-mapper-devel</code></li>
+<li><code>yum install libpciaccess-devel.x86_64</code></li>
+</ul>
+</li>
+<li><code>make</code> <code>make install</code></li>
+</ul>
+</li>
+<li><p>进入libvmi文件夹 </p>
+<ul>
+<li>README.rst 安装指导</li>
+<li><code>./configure --disable-xen</code> </li>
+<li><code>make</code> <ul>
+<li><code>fatal error: json-c/json.h: No such file or directory #include &lt;json-c/json.h&gt;</code> cmake安装jsoncpp</li>
+<li>emmmm to be continued……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<ol start="6">
+<li><p>进入nitro文件夹，</p>
+<p> 开qemu 装虚拟机。emmm to be continued……</p>
+</li>
+</ol>
+<ol start="7">
+<li>centos 64位系统安装32位运行库</li>
+</ol>
+<pre><code>例如：64位：yum install libX11-devel
+32位：yum install libX11-devel.i686
+
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/29/kvm-vmi_readme/" data-id="cjq8cxaij0001405biff6c0mn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/12/29/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/12/29/kvm-vmi_readme/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/29/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 YiXiangTianKai<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
