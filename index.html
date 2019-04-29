@@ -325,13 +325,13 @@
       
         
           
-            <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="一、-实验目的"><a href="#一、-实验目的" class="headerlink" title="一、 实验目的"></a>一、 实验目的</h2><ol>
+            <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><ol>
 <li>掌握缓冲区溢出的原理 </li>
 <li>掌握常用的缓冲区溢出方法 </li>
 <li>理解缓冲区溢出的危害性 </li>
 <li>掌握防范和避免缓冲区溢出攻击的方法</li>
 </ol>
-<h2 id="二、-实验环境"><a href="#二、-实验环境" class="headerlink" title="二、 实验环境"></a>二、 实验环境</h2><ol>
+<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><ol>
 <li><p>虚拟机 winXP sp3</p>
 <ul>
 <li>安装war-ftp 服务器</li>
@@ -354,8 +354,8 @@
 </ul>
 </li>
 </ol>
-<h2 id="三、-实验内容"><a href="#三、-实验内容" class="headerlink" title="三、 实验内容"></a>三、 实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
-<h2 id="四、-详细过程"><a href="#四、-详细过程" class="headerlink" title="四、 详细过程"></a>四、 详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
+<h2 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
+<h2 id="详细过程"><a href="#详细过程" class="headerlink" title="详细过程"></a>详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
 <blockquote>
 <p>tips:<br>初次打开可能会显示<br><code>War-FTP refuses to restart with the error Unknown format for user database</code><br>解决：删除FtpDaemon.dat 和 FtpDaemon.ini文件 再重新打开即可。<br><img src="/2019/04/29/warftp-exp/1-ftp.png" alt="1"></p>
 </blockquote>

@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta name="description" content="war-ftp 缓冲区溢出攻击实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18.2.0 D">
 <meta name="keywords" content="bufoverflow">
 <meta property="og:type" content="article">
 <meta property="og:title" content="warftp-exp">
 <meta property="og:url" content="http://yoursite.com/2019/04/29/warftp-exp/index.html">
 <meta property="og:site_name" content="Challenge forever">
-<meta property="og:description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta property="og:description" content="war-ftp 缓冲区溢出攻击实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18.2.0 D">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/2-ftp.png">
 <meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/1-ftp.png">
@@ -99,10 +99,10 @@
 <meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/10.png">
 <meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/11.png">
 <meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/12.png">
-<meta property="og:updated_time" content="2019-04-29T07:16:43.255Z">
+<meta property="og:updated_time" content="2019-04-29T07:30:00.003Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="warftp-exp">
-<meta name="twitter:description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta name="twitter:description" content="war-ftp 缓冲区溢出攻击实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18.2.0 D">
 <meta name="twitter:image" content="http://yoursite.com/2019/04/29/warftp-exp/2-ftp.png">
 
 
@@ -335,13 +335,13 @@
       
 
       
-        <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="一、-实验目的"><a href="#一、-实验目的" class="headerlink" title="一、 实验目的"></a>一、 实验目的</h2><ol>
+        <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><ol>
 <li>掌握缓冲区溢出的原理 </li>
 <li>掌握常用的缓冲区溢出方法 </li>
 <li>理解缓冲区溢出的危害性 </li>
 <li>掌握防范和避免缓冲区溢出攻击的方法</li>
 </ol>
-<h2 id="二、-实验环境"><a href="#二、-实验环境" class="headerlink" title="二、 实验环境"></a>二、 实验环境</h2><ol>
+<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><ol>
 <li><p>虚拟机 winXP sp3</p>
 <ul>
 <li>安装war-ftp 服务器</li>
@@ -364,8 +364,8 @@
 </ul>
 </li>
 </ol>
-<h2 id="三、-实验内容"><a href="#三、-实验内容" class="headerlink" title="三、 实验内容"></a>三、 实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
-<h2 id="四、-详细过程"><a href="#四、-详细过程" class="headerlink" title="四、 详细过程"></a>四、 详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
+<h2 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
+<h2 id="详细过程"><a href="#详细过程" class="headerlink" title="详细过程"></a>详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
 <blockquote>
 <p>tips:<br>初次打开可能会显示<br><code>War-FTP refuses to restart with the error Unknown format for user database</code><br>解决：删除FtpDaemon.dat 和 FtpDaemon.ini文件 再重新打开即可。<br><img src="/2019/04/29/warftp-exp/1-ftp.png" alt="1"></p>
 </blockquote>
@@ -565,7 +565,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#war-ftp-缓冲区溢出攻击"><span class="nav-number">1.</span> <span class="nav-text">war-ftp 缓冲区溢出攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-实验目的"><span class="nav-number">1.1.</span> <span class="nav-text">一、 实验目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-实验环境"><span class="nav-number">1.2.</span> <span class="nav-text">二、 实验环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-实验内容"><span class="nav-number">1.3.</span> <span class="nav-text">三、 实验内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-详细过程"><span class="nav-number">1.4.</span> <span class="nav-text">四、 详细过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#验证漏洞"><span class="nav-number">1.4.1.</span> <span class="nav-text">验证漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#od调试-分析栈结构"><span class="nav-number">1.4.2.</span> <span class="nav-text">od调试 分析栈结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造exploit"><span class="nav-number">1.4.3.</span> <span class="nav-text">构造exploit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">1.4.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#war-ftp-缓冲区溢出攻击"><span class="nav-number">1.</span> <span class="nav-text">war-ftp 缓冲区溢出攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实验目的"><span class="nav-number">1.1.</span> <span class="nav-text">实验目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验环境"><span class="nav-number">1.2.</span> <span class="nav-text">实验环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验内容"><span class="nav-number">1.3.</span> <span class="nav-text">实验内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细过程"><span class="nav-number">1.4.</span> <span class="nav-text">详细过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#验证漏洞"><span class="nav-number">1.4.1.</span> <span class="nav-text">验证漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#od调试-分析栈结构"><span class="nav-number">1.4.2.</span> <span class="nav-text">od调试 分析栈结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造exploit"><span class="nav-number">1.4.3.</span> <span class="nav-text">构造exploit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">1.4.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
