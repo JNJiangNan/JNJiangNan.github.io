@@ -232,6 +232,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/22/SKEE-paper/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YiXiangTianKai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Challenge forever">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/22/SKEE-paper/" itemprop="url">SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-22T23:38:08+08:00">
+                2019-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index">
+                    <span itemprop="name">paper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SKEE-A-Lightweight-Secure-Kernel-level-Execution-Environment-for-ARM"><a href="#SKEE-A-Lightweight-Secure-Kernel-level-Execution-Environment-for-ARM" class="headerlink" title="SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM"></a>SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM</h1><blockquote>
+<p>出处：NDSS 2016</p>
+<p>作者：Ahmed M. Azab,1 Kirk Swidowski,1Rohan Bhutkar, Jia Ma, Wenbo Shen, Ruowen Wang, and Peng Ning </p>
+<p>单位：Samsung KNOX R&amp;D, Samsung Research America</p>
+<p>原文：<a href="http://dx.doi.org/10.14722/ndss.2016.23009" target="_blank" rel="noopener">http://dx.doi.org/10.14722/ndss.2016.23009</a></p>
+</blockquote>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>SKEE有如下特性：</p>
+<ol>
+<li>基于ARM平台；</li>
+<li>与操作系统具有相同的特权级；</li>
+<li>隔离的轻量级的执行环境；</li>
+<li>在这个新的执行环境上支持对操作系统内核进行安全检测和保护。</li>
+</ol>
+<h2 id="痛点"><a href="#痛点" class="headerlink" title="痛点"></a>痛点</h2><p>如果将整个操作系统内核作为可信基（TCB），内核级安全保护机制一旦被绕过，攻击者将能获得整个系统的内存资源，这是非常危险的。因此，需要使用安全工具（security tools）来监控和保护内核，并且安全工具需要隔离的执行环境，以防遭受内核漏洞利用的破坏。</p>
+<p>先前工作</p>
+<ol>
+<li>基于虚拟化的方法。将安全工具执行在虚拟管理层（hypervisor）进而对内核监控和保护，然而hypervisor的TCB太大以至于自身易受攻击，从而处于hypervisor的安全工具也并不安全。</li>
+<li>一些不依赖于hypervisor的隔离的方法。microhypervisors，虽然缩小了TCB，但是不能满足较大的代码基础的安全工具；沙箱，虽然可以提供安全工具环境，但是需要hypervisor的介入来管理，同样TCB太大会带来自身的安全问题；硬件保护，在ARM中没有类似Intel的SGX保护机制，ARM中提供的TrustZone同样存在TCB太大而导致的自身安全问题。</li>
+</ol>
+<h2 id="SKEE的设计"><a href="#SKEE的设计" class="headerlink" title="SKEE的设计"></a>SKEE的设计</h2><ol>
+<li>隔离：要保证即使内核被攻击了SKEE也是安全的。<br>在系统启动时，首先，修改系统的内存布局，创建一块保护的虚拟地址空间给SKEE，通过修改内核用的内存转换表，该表项中不予设置SKEE区域的转换入口，来达到SKEE执行环境所用到内存保护区域与内核能访问的内存区域分离开来；其次，限制内核对内存管理单元（MMU）的访问权限，SKEE将完全控制MMU和内存转换表，并将其放在受保护的地址空间，内核无权修改。</li>
+<li>安全的上下文切换接口：提供内核环境和SKEE环境的切换。<br>由于SKEE与内核处于相同的特权级，因此它不能通过原始的切换内存转换表来实现（这只适用于如内核到用户进程这样高特权级到低特权级的转换），SKEE采用一种新的方法强制内核通过其设计的转换门跳转到隔离环境。当然这个门具有原子性和确定性，原子性保证该过程不被内核获得控制权，确定性保证每次转换都能到达安全检查的入口点，这两个特性防止将SKEE的地址空间暴露给内核。32-bit ARMv7 和64-bit ARMv8的实现方法不同。</li>
+<li>检测并保护内核：要提供给安全工具执行环境来审查内核状态并抵御攻击。<br>SKEE提供安全工具的执行环境，安全工具来实现具体的内核检测和保护。</li>
+</ol>
+<h2 id="威胁模型"><a href="#威胁模型" class="headerlink" title="威胁模型"></a>威胁模型</h2><p>根据攻击意图将内核攻击分为三类：</p>
+<ol>
+<li>旨在修改内核执行的攻击。此类攻击可以防范，因为SKEE会限制未通过审核的恶意代码在内核模式的运行。</li>
+<li>利用漏洞改变内核数据或控制流导致现有内核代码出现异常的恶意行为，如实现提权、ROP攻击。SKEE安全执行环境中存放的安全工具来抵御这些攻击（具体的检测攻击由安全工具决定，不在这篇文章的研究范围）。</li>
+<li>旨在破坏隔离环境进而破坏内核检测保护工具。SKEE可以保证这些攻击不能破坏隔离也不会饶过监控。</li>
+</ol>
+<h2 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h2><ol>
+<li>整个系统可以安全的启动（安全的创建了受保护的地址空间并且设置内核访问权限）。</li>
+<li>内核支持W⊕X，硬件平台实现Privileged eXecute Never (PXN)。</li>
+<li>在32-bit ARMv7平台，内核只能使用TTBR0，TTBR1专门给SKEE 使用，低于2GB的虚拟空间给没有特权的用户空间代码。</li>
+<li>在64-bit ARMv8平台，要求物理地址0x0的内存页专门给SKEE使用。</li>
+</ol>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>环境：</p>
+<ol>
+<li>32-bit ARMv7架构的Samsung Note4手机，Qualcomm 的Sanspdragon APQ8084 处理器。</li>
+<li>64-bit ARMv8架构的Samsung Galaxy S6和Samsung Galaxy Note5，Samsung System LSI 的Exynos 7420 处理器。</li>
+<li>操作系统：Android Lollipop version 5.0，Linux kernel version 3.10.61。<br>设计两组实验（纯粹的SKEE开销和安全检查的开销）。第一组 SKEE收到内核请求不进行安全检查；第二组 SKEE检查模拟请求是否以不利于隔离的方式修改内存布局。</li>
+</ol>
+<h3 id="仿真系统事件的开销"><a href="#仿真系统事件的开销" class="headerlink" title="仿真系统事件的开销"></a>仿真系统事件的开销</h3><p>首先，对比安全工具运行在SKEE里面和外部的开销。由于SKEE和内核是同级，所以他们的执行开销是相同的，真实受影响的是进出SKEE所带来的开销；其次，在SKEE放置了安全工具之后带来的开销。</p>
+<p>三个设备：未修改的安卓系统、清除TLB的SKEE系统和使用ASID的SKEE系统。</p>
+<ol>
+<li><p>转换到SKEE的开销：</p>
+<p>用ARM cycle count register (CCNT)来衡量。</p>
+<p><img src="/2019/05/22/SKEE-paper/1.png" alt="1.png"></p>
+<p>结果分析：使用ASID明显降低开销；ASID v8比v7开销更少，因为v8的实现只要一个原子操作 而v7需要一系列步骤。</p>
+</li>
+<li><p>Benchmark 性能开销：</p>
+<p>仅仅实验了清除TLB的情况，测试了7个不同的benchmark安全工具。结果发现两种架构下SKEE的性能均有所降低，不同工具降低程度不同，我们分析是TLB不同频率的缺失导致的不同的系统状态。</p>
+<p><img src="/2019/05/22/SKEE-paper/2.png" alt="2.png"><br><img src="/2019/05/22/SKEE-paper/3.png" alt="3.png"></p>
+</li>
+<li><p>加载APPs延迟</p>
+<p>衡量 按下app到其完全加载 的时间，选择了一些二进制文件很大并且需要很多图像处理的需要加载很久的游戏app。结果在预期范围内， SKEE的存在对app的加载带来了额外的时间开销。</p>
+<p><img src="/2019/05/22/SKEE-paper/4.png" alt="4.png"><br><img src="/2019/05/22/SKEE-paper/5.png" alt="5.png"></p>
+</li>
+<li><p>设备启动时间</p>
+<p>启动时SKEE的最糟糕的情况，因为需要大量的内存分配，在32-bit ARMv7中，原生系统平均启动时间是21.35秒，而SKEE是23.10秒（增加了8.2%）；在64-bit ARMv8中，原生是21.72秒，而SKEE是24.30秒（增加了11.9%）。</p>
+</li>
+</ol>
+<h3 id="安全检查样例开销"><a href="#安全检查样例开销" class="headerlink" title="安全检查样例开销"></a>安全检查样例开销</h3><p>三个比较：原生、没有执行安全检查的SKEE和执行了检查框架的SKEE。</p>
+<p><img src="/2019/05/22/SKEE-paper/6.png" alt="6.png"></p>
+<p>结果分析，表7和表4的SKEE的降低程度也是不同的，比如表7中Vellamo Browser是8.65% 而表4是14.88%，解释是TLB缺失的影响是不确定的，它与原生系统的设置有关；跟之前一样，观察到不同的安全工具对性能开销的影响也不同；总的来说，加入安全框架对性能的影响在小于10%。</p>
+<p>同样测量了启动时间，原生是30.15秒，没有执行检查的SKEE是33.80秒（增加了11.7%），执行安全检查的SKEE是35.12秒（增加了4.9%）。</p>
+<h3 id="增强性能"><a href="#增强性能" class="headerlink" title="增强性能"></a>增强性能</h3><p>通过一些诸如TZ-RKP的技术可以减少上下文切换次数进而提高性能。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/29/warftp-exp/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -919,7 +1127,7 @@ ebp, 0xffffcfa8---&gt;+-----------------+
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -930,7 +1138,7 @@ ebp, 0xffffcfa8---&gt;+-----------------+
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -941,7 +1149,7 @@ ebp, 0xffffcfa8---&gt;+-----------------+
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
