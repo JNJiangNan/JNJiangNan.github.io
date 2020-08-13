@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="web,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="服务器配置HTTPS服务前言最近看到论文的实验部分涉及到OpenSSL相关，这之后定是逃不过的一道坎，因此初探Web，尝试搭建一下实验所必须的环境，并从外行的角度来总结一下该过程。 预期有哪些？  了解一些名词，Nginx、Apache、OpenSSL、Http、Https 编译OpenSSL源码，并将其应用到Nginx中（也就是https）  下面首先介绍基础概念，然后就是实践操作。 基础概念H">
+<meta name="keywords" content="web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务器配置HTTPS服务">
+<meta property="og:url" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/index.html">
+<meta property="og:site_name" content="Challenge forever">
+<meta property="og:description" content="服务器配置HTTPS服务前言最近看到论文的实验部分涉及到OpenSSL相关，这之后定是逃不过的一道坎，因此初探Web，尝试搭建一下实验所必须的环境，并从外行的角度来总结一下该过程。 预期有哪些？  了解一些名词，Nginx、Apache、OpenSSL、Http、Https 编译OpenSSL源码，并将其应用到Nginx中（也就是https）  下面首先介绍基础概念，然后就是实践操作。 基础概念H">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/服务器配置HTTPS服务/https.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/nginx欢迎.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/服务器配置HTTPS服务/nginxhttps.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/不安全证书1.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/不安全证书2.png">
+<meta property="og:updated_time" content="2020-08-13T15:24:13.363Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="服务器配置HTTPS服务">
+<meta name="twitter:description" content="服务器配置HTTPS服务前言最近看到论文的实验部分涉及到OpenSSL相关，这之后定是逃不过的一道坎，因此初探Web，尝试搭建一下实验所必须的环境，并从外行的角度来总结一下该过程。 预期有哪些？  了解一些名词，Nginx、Apache、OpenSSL、Http、Https 编译OpenSSL源码，并将其应用到Nginx中（也就是https）  下面首先介绍基础概念，然后就是实践操作。 基础概念H">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/服务器配置HTTPS服务/https.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/">
+
+
+
+
+
+  <title>服务器配置HTTPS服务 | Challenge forever</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Challenge forever</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">come on!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/13/服务器配置HTTPS服务/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YiXiangTianKai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Challenge forever">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">服务器配置HTTPS服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-13T22:54:00+08:00">
+                2020-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/13/服务器配置HTTPS服务/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/13/服务器配置HTTPS服务/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="服务器配置HTTPS服务"><a href="#服务器配置HTTPS服务" class="headerlink" title="服务器配置HTTPS服务"></a>服务器配置HTTPS服务</h1><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近看到论文的实验部分涉及到OpenSSL相关，这之后定是逃不过的一道坎，因此初探Web，尝试搭建一下实验所必须的环境，并从外行的角度来总结一下该过程。</p>
+<p>预期有哪些？</p>
+<ul>
+<li>了解一些名词，Nginx、Apache、OpenSSL、Http、Https</li>
+<li>编译OpenSSL源码，并将其应用到Nginx中（也就是https）</li>
+</ul>
+<p>下面首先介绍基础概念，然后就是实践操作。</p>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><p>当我们在浏览器的地址栏中输入网址，然后点击回车，接着，浏览器就会<strong>呈现出我们需要的web界面</strong>，那么，这个界面是怎么产生的？</p>
+<p>web的界面是根据我们输入的URL（网址、地址），浏览器从服务器端获取对应的文件资源等信息，然后显示在浏览器上面。</p>
+<p>像这种通过发送请求获取服务器资源的web浏览器等，都可以称之为<strong>客户端（client）</strong>。web使用http（超文本传输协议）协议作为规范，来完成从客户端到服务端等一系列的运作流程，而协议指的就是规则的约定，可以说，web是建立在<strong>http协议</strong>上进行通信的。</p>
+<p>那么，web服务器在这之中扮演什么角色呢？</p>
+<p><strong>web服务器</strong>是“通过HTTP协议处理web请求的计算机系统”(a computer system that processes requests via HTTP)。这个词可以指代整个系统，也可以指代可接收和管理HTTP请求的的程序。这里介绍的web服务器指的是为终端用户处理web请求的程序。</p>
+<p>主流的web服务器有 Apache、Nginx、lighttpd、Apache Tomcat、Node.js。</p>
+<h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>Nginx 是俄罗斯人编写的十分轻量级的 HTTP 服务器,Nginx，它的发音为“engine X”，是一个高性能的HTTP和反向代理服务器，同时也是一个 IMAP/POP3/SMTP 代理服务器。NGINX的开发是为了解决C10K（C10K是如何处理1万个并发连接的简写）问题。</p>
+<p>其<strong>特点</strong>是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
+<p>它不仅可作为web服务器进行部署，也可作为代理服务器或负载平衡器。</p>
+<h3 id="Apache、Apache-Tomcat、lighttpd、Node-js"><a href="#Apache、Apache-Tomcat、lighttpd、Node-js" class="headerlink" title="Apache、Apache Tomcat、lighttpd、Node.js"></a>Apache、Apache Tomcat、lighttpd、Node.js</h3><p><strong>Apache HTTP Server</strong> 简称为 Apache，中文名：阿帕奇。全球超过52%的网站使用了Apache，它是目前最流行的web服务器。</p>
+<p>它可以在大多数计算机操作系统中运行，由于其多平台和安全性被广泛使用。Apache httpd通常运行在Linux上，也可以部署在OS X和Windows之上。</p>
+<p>Apache只支持静态网页，但像php,cgi,jsp等动态网页就需要<strong>Tomcat</strong>来处理。由于Tomcat本身也内含了一个HTTP服务器，它也可以被视作一个单独的Web服务器。Apache Tomcat是在Apache许可证 2.0 版的授权下进行发布的，通常用于运行Java应用程序。</p>
+<p>Apache，nginx，tomcat并称为网页服务三剑客，可见其应用度之广泛。</p>
+<p><strong>Lighttpd</strong>是一个德国人领导的开源Web服务器软件，其根本的目的是提供一个专门针对高性能网站，安全、快速、兼容性好并且灵活的web server环境。具有非常低的内存开销、cpu占用率低、效能好以及丰富的模块等特点。Lighttpd主要用于Catalyst和Ruby on Rails的web框架。</p>
+<p><strong>Node.js</strong>是一个Javascript运行环境(runtime environment)，发布于2009年5月，由Ryan Dahl开发，实质是对Chrome V8引擎进行了封装。Node.js对一些特殊用例进行优化，提供替代的API，使得V8在非浏览器环境下运行得更好。</p>
+<p>相比起其它流行的web服务器，Node.js的不同之处在于它是一个构建网络应用的跨平台运行环境，拥有可胜任异步I/0的事件驱动构架。这些设计选择能够优化应用程序的数据吞吐量和可伸缩性，支持实时通信和网页游戏。有许多大型高流量网站都采用Node.JS进行开发，此外，开发人员还可以使用它来开发一些快速移动Web框架。</p>
+<p>OK。Nginx等web服务器大致了解之后，回到本文主题，OpenSSL<br>在网络通信中又担任什么角色？</p>
+<p><strong>openssl是web安全通信的基石</strong>。OpenSSL是一个强大的安全套接字层密码库，http协议可配合ssl协议使用来保证通信的安全。</p>
+<h3 id="OpenSSL"><a href="#OpenSSL" class="headerlink" title="OpenSSL"></a>OpenSSL</h3><p><strong>SSL</strong>的全名叫做secure socket layer(安全套接字层)，最开始是由Netscape的互联网公司开发出来，主要是防止信息在互联网上传输的时候不被窃听或者篡改，后来Netscape公司提交SSL给ISOC组织做标准化，改名为TLS。SSL协议要求建立在可靠的传输层协议(TCP)之上。SSL协议的优势在于它是与应用层协议独立无关的，高层的应用层协议(例如：HTTP，FTP，TELNET等)能透明地建立于SSL协议之上。</p>
+<p>SSL只是一个协议，openssl则是SSL的实现版，另外openssl还包含了公钥私钥的生成、摘要生成等各种工具。</p>
+<p><strong>https相当于身披SSL外壳的http</strong>，https并非应用层的一种新协议，而是在http通信接口部分用SSL（Secure Socket Layer：安全套接字层）和TLS（Transport Layer Security：安全层传输协议）协议代替。</p>
+<p>通常，http和TCP直接通信，当使用SSL时，先由http和SSL通信，再由SSL和TCP通信。SSL是独立于http的协议，其他应用层的如SMTP何Telnet等协议都可以配合SSL进行使用。</p>
+<p> <img src="服务器配置HTTPS服务/https.png" alt="https"></p>
+<h2 id="实践操作"><a href="#实践操作" class="headerlink" title="实践操作"></a>实践操作</h2><p><em>在服务器上源码编译OpenSSL，配置Nginx，测试https</em></p>
+<blockquote>
+<p>服务器系统：CentOS Linux release 7.2.1511 (Core)</p>
+</blockquote>
+<blockquote>
+<p>这里都是通过源码来编译的，当然方便也可以选择系统自带的yum install直接安装OpenSSL和nginx</p>
+<p>目前是自建CA证书来走流程的，事实上应当通过第三方可靠证书颁发机构申请证书，那是后续的事情了</p>
+</blockquote>
+<h3 id="源码编译OpenSSL"><a href="#源码编译OpenSSL" class="headerlink" title="源码编译OpenSSL"></a>源码编译OpenSSL</h3><ul>
+<li><p>下载源码并解压</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@www download]# wget -P /root/download https://www.openssl.org/source/openssl-1.1.1g.tar.gz</span><br><span class="line">--2020-08-11 22:47:05--  https://www.openssl.org/source/openssl-1.1.1g.tar.gz</span><br><span class="line">Resolving www.openssl.org (www.openssl.org)... 104.69.2.174, 2600:1406:5800:49b::c1e, 2600:1406:5800:491::c1e</span><br><span class="line">Connecting to www.openssl.org (www.openssl.org)|104.69.2.174|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 9801502 (9.3M) [application/x-gzip]</span><br><span class="line">Saving to: &apos;/root/download/openssl-1.1.1g.tar.gz&apos;</span><br><span class="line"></span><br><span class="line">100%[======================================&gt;] 9,801,502   5.94MB/s   in 1.6s</span><br><span class="line"></span><br><span class="line">2020-08-11 22:47:07 (5.94 MB/s) - &apos;/root/download/openssl-1.1.1g.tar.gz&apos; saved [9801502/9801502]</span><br><span class="line"></span><br><span class="line">[root@www download]# tar zxvf openssl-1.1.1g.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>准备工作</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install make perl perl-devel gcc gcc-c++</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译安装</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@www download]# cd openssl-1.1.1g/</span><br><span class="line">[root@www openssl-1.1.1g]# ./config -fPIC --prefix=/usr/local/openssl enable-shared</span><br><span class="line">(注: --prefix：指定安装目录</span><br><span class="line">-fPIC 使输出的对象模块是按照可重定位地址方式生成的(即与位置无关).</span><br><span class="line">-shared 指定把对应的源文件生成对应的动态链接库库文件xx.so文件)</span><br><span class="line">[root@www openssl-1.1.1g]make</span><br><span class="line">[root@www openssl-1.1.1g]make install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>替换文件</p>
+<ul>
+<li><p>备份</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv /usr/bin/openssl          /usr/bin/openssl.bak</span><br><span class="line">mv /usr/include/openssl   /usr/include/openssl.bak</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>- 做软连接
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@www openssl-1.1.1g]# ln -sf /usr/local/openssl/bin/openssl /usr/bin/openssl</span><br><span class="line">[root@www openssl-1.1.1g]# ln -sf /usr/local/openssl/include/openssl    /usr/include/openssl</span><br><span class="line">[root@www openssl-1.1.1g]# echo &apos;/usr/local/openssl/lib&apos; &gt;&gt; /etc/ld.so.conf</span><br><span class="line">[root@www openssl-1.1.1g]# ll /usr/bin/openssl</span><br><span class="line">lrwxrwxrwx 1 root root 30 Aug 11 23:12 /usr/bin/openssl -&gt; /usr/local/openssl/bin/openssl</span><br></pre></td></tr></table></figure>
+
+
+- 加载共享库
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@www openssl-1.1.1g]# ldd /usr/local/openssl/bin/openssl</span><br><span class="line">	linux-vdso.so.1 =&gt;  (0x00007ffd4bb8f000)</span><br><span class="line">	libssl.so.1.1 =&gt; /usr/local/openssl/lib/libssl.so.1.1 (0x00007fb6d7992000)</span><br><span class="line">	libcrypto.so.1.1 =&gt; /usr/local/openssl/lib/libcrypto.so.1.1 (0x00007fb6d74ab000)</span><br><span class="line">	libdl.so.2 =&gt; /lib64/libdl.so.2 (0x00007fb6d72a7000)</span><br><span class="line">	libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007fb6d708b000)</span><br><span class="line">	libc.so.6 =&gt; /lib64/libc.so.6 (0x00007fb6d6cbd000)</span><br><span class="line">	/lib64/ld-linux-x86-64.so.2 (0x0000559e83647000)</span><br><span class="line">[root@www openssl-1.1.1g]# ldconfig -v</span><br><span class="line">ldconfig: Can&apos;t stat /libx32: No such file or directory</span><br><span class="line">ldconfig: Path `/usr/lib&apos; given more than once</span><br><span class="line">ldconfig: Path `/usr/lib64&apos; given more than once</span><br><span class="line">ldconfig: Can&apos;t stat /usr/libx32: No such file or directory</span><br><span class="line">/usr/lib64/mysql:</span><br><span class="line">	libmysqlclient.so.18 -&gt; libmysqlclient.so.18.0.0</span><br><span class="line">/usr/local/openssl/lib:</span><br><span class="line">	libssl.so.1.1 -&gt; libssl.so.1.1</span><br><span class="line">	libcrypto.so.1.1 -&gt; libcrypto.so.1.1</span><br><span class="line">/lib:</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+
+- 查看版本
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@www openssl-1.1.1g]# openssl version -a</span><br><span class="line">OpenSSL 1.1.1g  21 Apr 2020</span><br><span class="line">built on: Wed Aug 12 07:14:24 2020 UTC</span><br><span class="line">platform: linux-x86_64</span><br><span class="line">options:  bn(64,64) rc4(16x,int) des(int) idea(int) blowfish(ptr)</span><br><span class="line">compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -O3 -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG</span><br><span class="line">OPENSSLDIR: &quot;/usr/local/openssl/ssl&quot;</span><br><span class="line">ENGINESDIR: &quot;/usr/local/openssl//lib/engines-1.1&quot;</span><br><span class="line">Seeding source: os-specific</span><br></pre></td></tr></table></figure>
+</code></pre><h3 id="配置Nginx"><a href="#配置Nginx" class="headerlink" title="配置Nginx"></a>配置Nginx</h3><ul>
+<li><p>下载源码并解压</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@www download]# wget -P /root/download/ http://nginx.org/download/nginx-1.19.2.tar.gz</span><br><span class="line">--2020-08-12 04:02:40--  http://nginx.org/download/nginx-1.19.2.tar.gz</span><br><span class="line">Resolving nginx.org (nginx.org)... 3.125.197.172, 52.58.199.22, 2a05:d014:edb:5702::6, ...</span><br><span class="line">Connecting to nginx.org (nginx.org)|3.125.197.172|:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 1048727 (1.0M) [application/octet-stream]</span><br><span class="line">Saving to: ‘/root/download/nginx-1.19.2.tar.gz’</span><br><span class="line"></span><br><span class="line">100%[======================================&gt;] 1,048,727    861KB/s   in 1.2s</span><br><span class="line"></span><br><span class="line">2020-08-12 04:02:41 (861 KB/s) - ‘/root/download/nginx-1.19.2.tar.gz’ saved [1048727/1048727]</span><br><span class="line">[root@www download]# tar -zxvf nginx-1.19.2.tar.gz</span><br><span class="line">[root@www download]# ls</span><br><span class="line">nginx-1.19.2  nginx-1.19.2.tar.gz  openssl-1.1.1g  openssl-1.1.1g.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>准备工作</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zlib zlib-devel openssl-devel</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装nginx</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@www download]# cd nginx-1.19.2</span><br><span class="line">[root@www nginx-1.19.2]# ls</span><br><span class="line">CHANGES     LICENSE  auto  configure  html  src</span><br><span class="line">CHANGES.ru  README   conf  contrib    man</span><br><span class="line">[root@www nginx-1.19.2]# ./configure</span><br><span class="line">...</span><br><span class="line">checking for PCRE library ... not found</span><br><span class="line">checking for PCRE library in /usr/local/ ... not found</span><br><span class="line">checking for PCRE library in /usr/include/pcre/ ... not found</span><br><span class="line">checking for PCRE library in /usr/pkg/ ... not found</span><br><span class="line">checking for PCRE library in /opt/local/ ... not found</span><br><span class="line"></span><br><span class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</span><br><span class="line">You can either disable the module by using --without-http_rewrite_module</span><br><span class="line">option, or install the PCRE library into the system, or build the PCRE library</span><br><span class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装PCRE</p>
+<p>  PCRE 作用是让 Nginx 支持 Rewrite 功能。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@www download]# wget http://downloads.sourceforge.net/project/pcre/pcre/8.35/pcre-8.35.tar.gz</span><br><span class="line">[root@www download]# tar zxvf pcre-8.35.tar.gz</span><br><span class="line">[root@www download]# cd pcre-8.35</span><br><span class="line">[root@www pcre-8.35]# ./configure</span><br><span class="line">[root@www pcre-8.35]# make &amp;&amp; make install</span><br><span class="line">[root@www pcre-8.35]# pcre-config --version</span><br><span class="line">8.35</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接着安装nginx</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@www nginx-1.19.2]# ./configure --prefix=/usr/local/webserver/nginx --with-pcre=/root/download/pcre-8.35 --with-http_ssl_module</span><br><span class="line">[root@www nginx-1.19.2]# make</span><br><span class="line">[root@www nginx-1.19.2]# make install</span><br><span class="line">查看版本</span><br><span class="line">[root@www nginx-1.19.2]#  /usr/local/webserver/nginx/sbin/nginx -v</span><br><span class="line">nginx version: nginx/1.19.2</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">检查配置文件是否正确</span><br><span class="line">[root@www nginx-1.19.2]#  /usr/local/webserver/nginx/sbin/nginx -t</span><br><span class="line">nginx: the configuration file /usr/local/webserver/nginx/conf/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /usr/local/webserver/nginx/conf/nginx.conf test is successful</span><br><span class="line"></span><br><span class="line">可以看到编译选项</span><br><span class="line">[root@www nginx-1.19.2]# /usr/local/webserver/nginx/sbin/nginx -V</span><br><span class="line">nginx version: nginx/1.19.2</span><br><span class="line">built by gcc 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC)</span><br><span class="line">built with OpenSSL 1.0.2k-fips  26 Jan 2017</span><br><span class="line">TLS SNI support enabled</span><br><span class="line">configure arguments: --prefix=/usr/local/webserver/nginx --with-pcre=/root/download/pcre-8.35 --with-http_ssl_module</span><br><span class="line"></span><br><span class="line">启动、关闭</span><br><span class="line">[root@www nginx-1.19.2]#  /usr/local/webserver/nginx/sbin/nginx</span><br><span class="line">[root@www nginx-1.19.2]# ps -ef |grep nginx</span><br><span class="line">root     24343     1  0 04:32 ?        00:00:00 nginx: master process /usr/local/webserver/nginx/sbin/nginx</span><br><span class="line">nobody   24344 24343  0 04:32 ?        00:00:00 nginx: worker process</span><br><span class="line">root     24360 10179  0 04:33 pts/2    00:00:00 grep --color=auto nginx</span><br><span class="line">[root@www nginx-1.19.2]#  /usr/local/webserver/nginx/sbin/nginx -s stop</span><br><span class="line">[root@www nginx-1.19.2]# ps -ef |grep nginx</span><br><span class="line">root     24377 10179  0 04:34 pts/2    00:00:00 grep --color=auto nginx</span><br></pre></td></tr></table></figure>
+<p>  在浏览器中键入<a href="http://localhost:80，可以访问到nginx的欢迎界面。" target="_blank" rel="noopener">http://localhost:80，可以访问到nginx的欢迎界面。</a>(默认nginx.conf 80端口)</p>
+<p>  <img src="/2020/08/13/服务器配置HTTPS服务/nginx欢迎.png" alt="nginx欢迎"></p>
+</li>
+<li><p>配置ssl</p>
+<blockquote>
+<p><a href="https://segmentfault.com/a/1190000004976222" target="_blank" rel="noopener">Nginx+Https配置</a> </p>
+</blockquote>
+<p>  Step1: Create the SSL Certificate</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]# openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx233.key -out /etc/nginx/ssl/nginx233.crt</span><br><span class="line">Generating a RSA private key</span><br><span class="line">...........+++++</span><br><span class="line">..........................+++++</span><br><span class="line">writing new private key to &apos;/etc/nginx/ssl/nginx233.key&apos;</span><br><span class="line">-----</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name or a DN.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter &apos;.&apos;, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Country Name (2 letter code) [AU]:US</span><br><span class="line">State or Province Name (full name) [Some-State]:NewYork</span><br><span class="line">Locality Name (eg, city) []:New York City</span><br><span class="line">Organization Name (eg, company) [Internet Widgits Pty Ltd]:Bouncy Castles, Inc.</span><br><span class="line">Organizational Unit Name (eg, section) []:Ministry of Water Slides</span><br><span class="line">Common Name (e.g. server FQDN or YOUR name) []:yixiangtiankai.com</span><br><span class="line">Email Address []:admin@yixiangtiankai.com</span><br></pre></td></tr></table></figure>
+<p>  Step2: Configure Nginx to Use SSL</p>
+<blockquote>
+<p><a href="https://www.runoob.com/linux/nginx-install-setup.html" target="_blank" rel="noopener">Nginx 安装配置</a></p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">修改之前我先进行了一个备份</span><br><span class="line">[root@www ~]# cp /usr/local/webserver/nginx/conf/nginx.conf /usr/local/webserver/nginx/conf/nginx.conf.bak</span><br><span class="line">[root@www ~]# vim /usr/local/webserver/nginx/conf/nginx.conf</span><br><span class="line"></span><br><span class="line">#user  nobody;</span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">#error_log  logs/error.log;</span><br><span class="line">#error_log  logs/error.log  notice;</span><br><span class="line">#error_log  logs/error.log  info;</span><br><span class="line">error_log /usr/local/webserver/nginx/logs/nginx_error.log crit;</span><br><span class="line"></span><br><span class="line">#pid        logs/nginx.pid;</span><br><span class="line">pid /usr/local/webserver/nginx/nginx.pid;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line"></span><br><span class="line">    #access_log  logs/access.log  main;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    tcp_nopush     on;</span><br><span class="line"></span><br><span class="line">    #keepalive_timeout  0;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line">    gzip  on;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        #server_name  localhost;</span><br><span class="line">        server_name www.yixiangtiankai.com;</span><br><span class="line">	rewrite ^ https://$http_host$request_uri? permanent;</span><br><span class="line"></span><br><span class="line">        #charset koi8-r;</span><br><span class="line"></span><br><span class="line">        #access_log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        #error_page  404              /404.html;</span><br><span class="line"></span><br><span class="line">        # redirect server error pages to the static page /50x.html</span><br><span class="line">        #</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</span><br><span class="line">        #</span><br><span class="line">        #location ~ \.php$ &#123;</span><br><span class="line">        #    proxy_pass   http://127.0.0.1;</span><br><span class="line">        #&#125;</span><br><span class="line"></span><br><span class="line">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span><br><span class="line">        #</span><br><span class="line">        #location ~ \.php$ &#123;</span><br><span class="line">        #    root           html;</span><br><span class="line">        #    fastcgi_pass   127.0.0.1:9000;</span><br><span class="line">        #    fastcgi_index  index.php;</span><br><span class="line">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</span><br><span class="line">        #    include        fastcgi_params;</span><br><span class="line">        #&#125;</span><br><span class="line"></span><br><span class="line">        # deny access to .htaccess files, if Apache&apos;s document root</span><br><span class="line">        # concurs with nginx&apos;s one</span><br><span class="line">        #</span><br><span class="line">        #location ~ /\.ht &#123;</span><br><span class="line">        #    deny  all;</span><br><span class="line">        #&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # another virtual host using mix of IP-, name-, and port-based configuration</span><br><span class="line">    #</span><br><span class="line">    #server &#123;</span><br><span class="line">    #    listen       8000;</span><br><span class="line">    #    listen       somename:8080;</span><br><span class="line">    #    server_name  somename  alias  another.alias;</span><br><span class="line"></span><br><span class="line">    #    location / &#123;</span><br><span class="line">    #        root   html;</span><br><span class="line">    #        index  index.html index.htm;</span><br><span class="line">    #    &#125;</span><br><span class="line">    #&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # HTTPS server</span><br><span class="line">    #</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       443 ssl;</span><br><span class="line">        server_name  www.yixiangtiankai.com;</span><br><span class="line"></span><br><span class="line">        ssl_certificate      /etc/nginx/ssl/nginx233.crt;</span><br><span class="line">        ssl_certificate_key  /etc/nginx/ssl/nginx233.key;</span><br><span class="line"></span><br><span class="line">    #    ssl_session_cache    shared:SSL:1m;</span><br><span class="line">    #    ssl_session_timeout  5m;</span><br><span class="line"></span><br><span class="line">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</span><br><span class="line">    #    ssl_prefer_server_ciphers  on;</span><br><span class="line"></span><br><span class="line">    #    location / &#123;</span><br><span class="line">    #        root   html;</span><br><span class="line">    #        index  index.html index.htm;</span><br><span class="line">    #    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>&gt; [使用OpenSSL自建CA + Nginx配置HTTPS](https://www.cnblogs.com/luo630/p/9534734.html)
+
+上面的配置完毕后，就可以通过http、https访问网站了，不过，http的是被rewrite转向了https，所以，页面最后看到的是https。
+
+step3: 重启nginx
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">重新载入配置文件</span><br><span class="line">[root@www ~]# /usr/local/webserver/nginx/sbin/nginx -s reload</span><br><span class="line">重启Nginx</span><br><span class="line">[root@www ~]# /usr/local/webserver/nginx/sbin/nginx -s reopen</span><br><span class="line">[root@www ~]# ps -ef |grep nginx</span><br><span class="line">root      2393     1  0 21:41 ?        00:00:00 nginx: master process /usr/local/webserver/nginx/sbin/nginx</span><br><span class="line">nobody    2838  2393  0 22:01 ?        00:00:00 nginx: worker process</span><br><span class="line">root      2842  2771  0 22:01 pts/2    00:00:00 grep --color=auto nginx</span><br></pre></td></tr></table></figure>
+</code></pre><h3 id="测试https"><a href="#测试https" class="headerlink" title="测试https"></a>测试https</h3><p>在浏览器中键入<code>https://localhost:443</code>，可以访问到nginx的欢迎界面。（HTTPS网站的默认端口是443)</p>
+<p><img src="服务器配置HTTPS服务/nginxhttps.png" alt="nginx-https"><br><img src="/2020/08/13/服务器配置HTTPS服务/不安全证书1.png" alt="不安全证书"><br><img src="/2020/08/13/服务器配置HTTPS服务/不安全证书2.png" alt="不安全证书2"></p>
+<p>OK，现在网站变为HTTPS的了，自建的证书既然无法正常使用，那么，去申请机构申请证书吧。</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p><a href="https://aotu.io/notes/2016/08/16/nginx-https/index.html" target="_blank" rel="noopener">Nginx 配置 HTTPS 服务器</a></p>
+<p>通过第三方可靠证书颁发机构申请证书。</p>
+<p>https优化（CPU 安全等）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>感谢支持～</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="YiXiangTianKai Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/22/SKEE-paper/" rel="next" title="SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM">
+                <i class="fa fa-chevron-left"></i> SKEE: A Lightweight Secure Kernel-level Execution Environment for ARM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">YiXiangTianKai</p>
+              <p class="site-description motion-element" itemprop="description">Here start my blog life! Record something significant in specific!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="nanjiang1121@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器配置HTTPS服务"><span class="nav-number">1.</span> <span class="nav-text">服务器配置HTTPS服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.0.1.</span> <span class="nav-text">前言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础概念"><span class="nav-number">1.1.</span> <span class="nav-text">基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP"><span class="nav-number">1.1.1.</span> <span class="nav-text">HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx"><span class="nav-number">1.1.2.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache、Apache-Tomcat、lighttpd、Node-js"><span class="nav-number">1.1.3.</span> <span class="nav-text">Apache、Apache Tomcat、lighttpd、Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenSSL"><span class="nav-number">1.1.4.</span> <span class="nav-text">OpenSSL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践操作"><span class="nav-number">1.2.</span> <span class="nav-text">实践操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码编译OpenSSL"><span class="nav-number">1.2.1.</span> <span class="nav-text">源码编译OpenSSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Nginx"><span class="nav-number">1.2.2.</span> <span class="nav-text">配置Nginx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试https"><span class="nav-number">1.2.3.</span> <span class="nav-text">测试https</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">1.2.4.</span> <span class="nav-text">后记</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXiangTianKai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">全站共 9.6k 字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'lJhDDwQjkkXqkPD3T4C08FcC-gzGzoHsz',
+        appKey: 'NeB4XcXQ7TKWvap0shkzl7ys',
+        placeholder: '有什么要对challenge说的',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
